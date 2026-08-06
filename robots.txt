@@ -1,0 +1,12 @@
+# robots.txt for RGL Business Solutions
+# https://rgl.com.ph
+
+User-agent: *
+Allow: /
+
+# Disallow admin and form processing files
+Disallow: /forms/
+Disallow: /vendor/
+
+# Sitemap location
+Sitemap: https://rgl.com.ph/sitemap.xml
