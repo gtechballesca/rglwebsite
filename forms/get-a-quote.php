@@ -16,9 +16,9 @@ header('Content-Type: text/plain; charset=UTF-8');
 // ============================================
 $smtp_host = 'localhost'; // Outgoing Server (SMTP)
 $smtp_port = 465;         // SMTP Port
-$smtp_username = 'info@rgl.com.ph';
-$smtp_password = 'tT47U?Af6D6lnZ),'; // email account password
-$receiving_email = 'gilballesca@gmail.com';
+$smtp_username = 'info-z@rgl.com.ph';
+$smtp_password = ']FsIh-o(&3it@b~P'; // email account password
+$receiving_email = info@rgl.com.ph';
 
 
 // $smtp_host = 'smtp.gmail.com'; // Outgoing Server (SMTP)
