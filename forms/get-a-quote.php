@@ -16,6 +16,12 @@ header('Content-Type: text/plain');
 // ============================================
 // SMTP CONFIGURATION - Gmail with App Password
 // ============================================
+// $smtp_host = 'smtp.gmail.com';
+// $smtp_port = 587;                             // Use 587 with STARTTLS
+// $smtp_username = 'perezryanjohn@gmail.com';
+// $smtp_password = 'vrcv futp nedt ljfc';       // Gmail App Password
+// $receiving_email = 'info@rgl.com.ph';
+
 $smtp_host = 'cpanel10wh.jpt1.cloud.z.com'; // Or 'mail.rgl.com.ph' / 'localhost'
 $smtp_port = 465;                             // Port 465 for SSL (or 587 for TLS)
 $smtp_username = 'rglsys@rgl.com.ph';      // Your full cPanel email address
