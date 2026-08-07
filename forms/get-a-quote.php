@@ -14,7 +14,7 @@ header('Content-Type: text/plain; charset=UTF-8');
 // z.com cPanel → Mail Client Manual Settings
 // Secure SSL/TLS (Recommended)
 // ============================================
-$smtp_host = 'rgl.com.ph'; // Outgoing Server (SMTP)
+$smtp_host = 'mail.rgl.com.ph'; // Outgoing Server (SMTP)
 $smtp_port = 465;         // SMTP Port
 $smtp_username = 'rglsys@rgl.com.ph';
 $smtp_password = 'BmUUQ^oBL4$1I3mi'; // email account password
@@ -38,7 +38,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-$subject = 'RGL ' . $type . ' Inquiry from ' . $name;
+$subject = '[RGL Website] ' . ($type !== '' ? $type . ' inquiry' : 'Inquiry') . ' from ' . $name;
 
 $email_body = "You have received a new inquiry request from your website.\n\n";
 $email_body .= "Name: $name\n";
@@ -73,7 +73,12 @@ try {
     ];
 
     $mail->setFrom($smtp_username, 'RGL Website Inquiry');
+    $mail->Sender = $smtp_username;
     $mail->addAddress($receiving_email);
+    // Backup copy so you can verify delivery while testing
+    if (strcasecmp($smtp_username, $receiving_email) !== 0) {
+        $mail->addBCC($smtp_username);
+    }
     $mail->addReplyTo($email, $name);
 
     $mail->isHTML(false);
