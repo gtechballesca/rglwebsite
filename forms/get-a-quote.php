@@ -1,263 +1,98 @@
 <?php
+/**
+ * Get A Quote Form Handler using PHPMailer
+ */
 
-declare(strict_types=1);
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    header('Content-Type: text/plain; charset=UTF-8');
-    exit('Method not allowed');
-}
+// Load Composer autoloader
+require '../vendor/autoload.php';
 
-header('Content-Type: text/plain; charset=UTF-8');
+// Set plain text response header for AJAX
+header('Content-Type: text/plain');
 
-$name = isset($_POST['name']) ? strip_tags(trim((string) $_POST['name'])) : '';
-$name = preg_replace('/[\r\n\0]/', '', $name);
-$company = isset($_POST['company']) ? strip_tags(trim((string) $_POST['company'])) : '';
-$email = isset($_POST['email']) ? trim((string) $_POST['email']) : '';
-$phone = isset($_POST['phone']) ? strip_tags(trim((string) $_POST['phone'])) : '';
-$type = isset($_POST['type']) ? strip_tags(trim((string) $_POST['type'])) : '';
-$message = isset($_POST['message']) ? strip_tags(trim((string) $_POST['message'])) : '';
+// ============================================
+// SMTP CONFIGURATION - Gmail with App Password
+// ============================================
+$smtp_host = 'smtp.gmail.com';
+$smtp_port = 587;                             // Use 587 with STARTTLS
+$smtp_username = 'perezryanjohn@gmail.com';
+$smtp_password = 'vrcv futp nedt ljfc';       // Gmail App Password
+$receiving_email = 'info@rgl.com.ph';
 
-if ($name === '' || $company === '' || $email === '' || $phone === '' || $type === '' || $message === '') {
-    http_response_code(400);
-    exit('Please fill in all required fields.');
-}
+// ============================================
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    http_response_code(400);
-    exit('Please enter a valid email address.');
-}
-
-$configFile = __DIR__ . '/mail-config.php';
-$config = is_file($configFile) ? require $configFile : [];
-if (!is_array($config)) {
-    $config = [];
-}
-
-$toEmail = (string) ($config['to_email'] ?? 'info@rgl.com.ph');
-$fromEmail = (string) ($config['from_email'] ?? 'info@rgl.com.ph');
-$fromName = (string) ($config['from_name'] ?? 'RGL Website');
-
-$subject = 'RGL Website Quote Request from ' . $email . ': ' . $type;
-$body = "New inquiry from the RGL website\n\n";
-$body .= "Name: $name\n";
-$body .= "Company: $company\n";
-$body .= "Work Email: $email\n";
-$body .= "Phone: $phone\n";
-$body .= "Service: $type\n\n";
-$body .= "Message:\n$message\n";
-
-$logEntry = sprintf(
-    "[%s] %s <%s> (%s) - %s\nCompany: %s\n%s\n\n",
-    date('c'),
-    $name,
-    $email,
-    $phone,
-    $type,
-    $company,
-    $message
-);
-
-function saveSubmissionLog(string $entry): void
-{
-    @file_put_contents(__DIR__ . '/submissions.log', $entry, FILE_APPEND | LOCK_EX);
-}
-
-function web3formsKeyIsSet(array $config): bool
-{
-    $key = (string) ($config['web3forms_access_key'] ?? '');
-
-    return $key !== '' && $key !== 'YOUR_WEB3FORMS_ACCESS_KEY';
-}
-
-function smtpPasswordIsSet(array $config): bool
-{
-    $password = (string) ($config['smtp_password'] ?? '');
-
-    return $password !== '' && $password !== 'YOUR_CPANEL_EMAIL_PASSWORD_HERE';
-}
-
-function sendViaWeb3Forms(string $accessKey, string $subject, string $name, string $email, string $phone, string $company, string $type, string $message): ?string
-{
-    if (!function_exists('curl_init')) {
-        return 'cURL is not available on this server.';
-    }
-
-    $payload = json_encode([
-        'access_key' => $accessKey,
-        'subject' => $subject,
-        'from_name' => $name,
-        'name' => $name,
-        'email' => $email,
-        'phone' => $phone,
-        'company' => $company,
-        'service' => $type,
-        'message' => $message,
-        'replyto' => $email,
-    ]);
-
-    $ch = curl_init('https://api.web3forms.com/submit');
-    curl_setopt_array($ch, [
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $payload,
-        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 20,
-    ]);
-
-    $response = curl_exec($ch);
-    $curlError = curl_error($ch);
-    curl_close($ch);
-
-    if ($response === false) {
-        return $curlError !== '' ? $curlError : 'Could not reach Web3Forms.';
-    }
-
-    $result = json_decode($response, true);
-    if (is_array($result) && !empty($result['success'])) {
-        return null;
-    }
-
-    return is_array($result) && !empty($result['message'])
-        ? (string) $result['message']
-        : 'Web3Forms rejected the submission.';
-}
-
-function loadPhpMailer(): bool
-{
-    $phpmailerFile = __DIR__ . '/phpmailer/PHPMailer.php';
-    if (!is_file($phpmailerFile)) {
-        return false;
-    }
-
-    require_once __DIR__ . '/phpmailer/Exception.php';
-    require_once __DIR__ . '/phpmailer/PHPMailer.php';
-    require_once __DIR__ . '/phpmailer/SMTP.php';
-
-    return true;
-}
-
-function sendViaPhpMailer(array $smtpConfig, string $toEmail, string $fromEmail, string $fromName, string $replyEmail, string $replyName, string $subject, string $body): ?string
-{
-    if (!loadPhpMailer()) {
-        return 'PHPMailer is not installed. Upload the forms/phpmailer folder.';
-    }
-
-    try {
-        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host = (string) $smtpConfig['smtp_host'];
-        $mail->Port = (int) $smtpConfig['smtp_port'];
-        
-        // Handle Authentication
-        if (!empty($smtpConfig['smtp_password'])) {
-            $mail->SMTPAuth = true;
-            $mail->Username = (string) $smtpConfig['smtp_username'];
-            $mail->Password = (string) $smtpConfig['smtp_password'];
-        } else {
-            $mail->SMTPAuth = false;
-        }
-
-        // Security settings for localhost vs external host
-        $secure = strtolower((string) ($smtpConfig['smtp_secure'] ?? ''));
-        if ($secure === 'tls') {
-            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-        } elseif ($secure === 'ssl') {
-            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
-        } else {
-            $mail->SMTPSecure = '';
-            $mail->SMTPAutoTLS = false; // Prevents forced TLS on localhost port 25
-        }
-
-        $mail->Timeout = 20;
-        $mail->CharSet = PHPMailer\PHPMailer\PHPMailer::CHARSET_UTF8;
-        $mail->setFrom($fromEmail, $fromName);
-        $mail->Sender = $fromEmail;
-        $mail->addAddress($toEmail);
-        $mail->addReplyTo($replyEmail, $replyName !== '' ? $replyName : $replyEmail);
-        $mail->Subject = $subject;
-        $mail->Body = $body;
-        $mail->send();
-
-        return null;
-    } catch (PHPMailer\PHPMailer\Exception $exception) {
-        return $exception->getMessage();
-    }
-}
-
-
-$attempts = [];
-$sent = false;
-$lastError = '';
-
-if (web3formsKeyIsSet($config)) {
-    $error = sendViaWeb3Forms(
-        (string) $config['web3forms_access_key'],
-        $subject,
-        $name,
-        $email,
-        $phone,
-        $company,
-        $type,
-        $message
-    );
-    $attempts[] = 'web3forms:' . ($error ?? 'ok');
-    if ($error === null) {
-        $sent = true;
-    } else {
-        $lastError = $error;
-    }
-}
-
-if (!$sent && smtpPasswordIsSet($config)) {
-    $smtpProfiles = [
-        [
-            'label' => 'ssl-465',
-            'smtp_host' => (string) ($config['smtp_host'] ?? 'mail.rgl.com.ph'),
-            'smtp_port' => (int) ($config['smtp_port'] ?? 465),
-            'smtp_secure' => (string) ($config['smtp_secure'] ?? 'ssl'),
-            'smtp_username' => (string) ($config['smtp_username'] ?? $fromEmail),
-            'smtp_password' => (string) $config['smtp_password'],
-        ],
-        [
-            'label' => 'tls-587',
-            'smtp_host' => (string) ($config['smtp_host'] ?? 'mail.rgl.com.ph'),
-            'smtp_port' => 587,
-            'smtp_secure' => 'tls',
-            'smtp_username' => (string) ($config['smtp_username'] ?? $fromEmail),
-            'smtp_password' => (string) $config['smtp_password'],
-        ],
-    ];
-
-    foreach ($smtpProfiles as $profile) {
-        $label = (string) $profile['label'];
-        unset($profile['label']);
-        $error = sendViaPhpMailer($profile, $toEmail, $fromEmail, $fromName, $email, $name, $subject, $body);
-        $attempts[] = $label . ':' . ($error ?? 'ok');
-
-        if ($error === null) {
-            $sent = true;
-            break;
-        }
-
-        $lastError = $error;
-    }
-}
-
-saveSubmissionLog($logEntry . ($sent ? 'SENT VIA: ' : 'SEND FAILED: ') . implode(' | ', $attempts) . "\n\n");
-
-if ($sent) {
-    echo 'OK';
+// Validate required fields
+if (empty($_POST['name']) || empty($_POST['email'])) {
+    echo 'Please fill in all required fields.';
     exit;
 }
 
-http_response_code(500);
+// Sanitize input data
+$name = htmlspecialchars(strip_tags(trim($_POST['name'])));
+$email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+$phone = isset($_POST['phone']) ? htmlspecialchars(strip_tags(trim($_POST['phone']))) : '';
+$message = isset($_POST['message']) ? htmlspecialchars(strip_tags(trim($_POST['message']))) : '';
+$type = isset($_POST['type']) ? htmlspecialchars(strip_tags(trim($_POST['type']))) : '';
+$company = isset($_POST['company']) ? htmlspecialchars(strip_tags(trim($_POST['company']))) : '';
 
-if (!web3formsKeyIsSet($config) && !smtpPasswordIsSet($config)) {
-    exit(
-        'Email is not configured. In forms/mail-config.php on the server, set either ' .
-        'web3forms_access_key (recommended — free at web3forms.com) or smtp_password for info@rgl.com.ph.'
-    );
+// $departure = isset($_POST['departure']) ? htmlspecialchars(strip_tags(trim($_POST['departure']))) : '';
+// $delivery = isset($_POST['delivery']) ? htmlspecialchars(strip_tags(trim($_POST['delivery']))) : '';
+// $weight = isset($_POST['weight']) ? htmlspecialchars(strip_tags(trim($_POST['weight']))) : '';
+// $dimensions = isset($_POST['dimensions']) ? htmlspecialchars(strip_tags(trim($_POST['dimensions']))) : '';
+
+// Validate email format
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo 'Invalid email format.';
+    exit;
 }
 
-exit('Unable to send email: ' . ($lastError ?: 'Delivery failed') . '. Check forms/mail-config.php.');
+// Email subject
+$subject = 'RGL '. $type .' Inquiry from '. $name;
+
+// Build email body
+$email_body = "You have received a new inquiry request from your website.\n\n";
+// $email_body .= "City of Departure: $departure\n";
+// $email_body .= "Delivery City: $delivery\n";
+// $email_body .= "Total Weight (kg): $weight\n";
+// $email_body .= "Dimensions (cm): $dimensions\n\n";
+$email_body .= "Name: $name\n"; 
+$email_body .= "Company: $company\n";
+$email_body .= "Email: $email\n";
+$email_body .= "Phone: $phone\n";
+$email_body .= "Inquiry Type: $type\n";
+if (!empty($message)) {
+    $email_body .= "\nMessage:\n$message\n";
+}
+
+// Create PHPMailer instance
+$mail = new PHPMailer(true);
+
+try {
+    // SMTP settings
+    $mail->isSMTP();
+    $mail->Host       = $smtp_host;
+    $mail->SMTPAuth   = true;
+    $mail->Username   = $smtp_username;
+    $mail->Password   = $smtp_password;
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port       = $smtp_port;
+
+    // Recipients
+    $mail->setFrom($smtp_username, 'RGL Website Inquiry');
+    $mail->addAddress($receiving_email);
+    $mail->addReplyTo($email, $name);
+
+    // Content
+    $mail->isHTML(false);
+    $mail->Subject = $subject;
+    $mail->Body    = $email_body;
+
+    $mail->send();
+    echo 'OK';
+} catch (Exception $e) {
+    echo "Unable to send email. Error: {$mail->ErrorInfo}";
+}
+?>

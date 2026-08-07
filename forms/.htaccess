@@ -1,6 +1,0 @@
-<Files "submissions.log">
-    Require all denied
-</Files>
-<Files "mail-config.php">
-    Require all denied
-</Files>

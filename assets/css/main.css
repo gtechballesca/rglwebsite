@@ -797,7 +797,7 @@ section,
   font-size: 14px;
   text-transform: uppercase;
   color: var(--accent-color);
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   letter-spacing: 1px;
   position: relative;
   padding-left: 25px;
@@ -821,6 +821,15 @@ section,
   line-height: 1.2;
 }
 
+.hero .hero-content h3 {
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+  font-weight: 600;
+  margin-bottom: 28px;
+  line-height: 1.45;
+  color: var(--heading-color);
+  max-width: 36em;
+}
+
 @media (max-width: 992px) {
   .hero .hero-content h1 {
     font-size: 36px;
@@ -830,6 +839,15 @@ section,
 @media (max-width: 768px) {
   .hero .hero-content h1 {
     font-size: 32px;
+  }
+
+  .hero .hero-content h3 {
+    font-size: 1.125rem;
+    margin-bottom: 20px;
+  }
+
+  .hero .hero-content .hero-sentences .hero-sentence-text {
+    font-size: 0.9375rem;
   }
 }
 
@@ -847,12 +865,6 @@ section,
   max-width: 100%;
 }
 
-.hero-sentences {
-  padding: 8px;
-  margin-bottom: 5px;
-  margin-top: 5px;
-}
-
 .hero .hero-content .hero-sentences {
   padding: 0;
   margin: 0 0 12px;
@@ -860,7 +872,6 @@ section,
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  align-self: stretch;
 }
 
 .hero .hero-content .hero-sentences .hero-sentence-item {
@@ -906,38 +917,39 @@ section,
 .hero .hero-buttons {
   display: flex;
   justify-content: center;
-  align-items: center;
-  width: 100%;
+  align-self: stretch;
+  gap: 15px;
   margin-top: 12px;
   margin-bottom: 40px;
-  text-align: center;
+}
+
+@media (max-width: 576px) {
+  .hero .hero-content .hero-cta-block {
+    width: 100%;
+  }
+
+  .hero .hero-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .hero .hero-buttons .btn-primary {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .hero .hero-buttons .btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
   padding: 14px 32px;
   background-color: var(--accent-color);
   color: var(--contrast-color);
   border-radius: 4px;
   font-weight: 600;
-  line-height: 1.2;
   text-align: center;
-  white-space: nowrap;
-  box-sizing: border-box;
   transition: all 0.3s ease;
-}
-
-@media (max-width: 991px) {
-  .hero .hero-content .hero-cta-block {
-    width: 100%;
-  }
-
-  .hero .hero-buttons .btn-primary {
-    width: 100%;
-    max-width: 100%;
-  }
 }
 
 .hero .hero-buttons .btn-primary:hover {
