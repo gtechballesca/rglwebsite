@@ -14,10 +14,17 @@ header('Content-Type: text/plain; charset=UTF-8');
 // z.com cPanel → Mail Client Manual Settings
 // Secure SSL/TLS (Recommended)
 // ============================================
-$smtp_host = 'localhost'; // Outgoing Server (SMTP)
+// $smtp_host = 'localhost'; // Outgoing Server (SMTP)
+// $smtp_port = 465;         // SMTP Port
+// $smtp_username = 'info@rgl.com.ph';
+// $smtp_password = 'tT47U?Af6D6lnZ),'; // email account password
+// $receiving_email = 'info@rgl.com.ph';
+
+
+$smtp_host = 'smtp.gmail.com'; // Outgoing Server (SMTP)
 $smtp_port = 465;         // SMTP Port
-$smtp_username = 'info@rgl.com.ph';
-$smtp_password = 'tT47U?Af6D6lnZ),'; // email account password
+$smtp_username = 'gilballesca@gmail.com';
+$smtp_password = 'xxxu gnjk jaug ykzq'; // email account password
 $receiving_email = 'info@rgl.com.ph';
 // ============================================
 
