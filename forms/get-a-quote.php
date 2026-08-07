@@ -19,13 +19,6 @@ $smtp_port = 587;         // SMTP Port
 $smtp_username = 'info-z@rgl.com.ph';
 $smtp_password = '.N~BoFp?ZVWm^lzK'; // email account password
 $receiving_email = info@rgl.com.ph';
-
-
-// $smtp_host = 'smtp.gmail.com'; // Outgoing Server (SMTP)
-// $smtp_port = 465;         // SMTP Port
-// $smtp_username = 'gilballesca@gmail.com';
-// $smtp_password = 'xxxu gnjk jaug ykzq'; // email account password
-// $receiving_email = 'info@rgl.com.ph';
 // ============================================
 
 if (empty($_POST['name']) || empty($_POST['email'])) {
