@@ -17,7 +17,7 @@ header('Content-Type: text/plain; charset=UTF-8');
 $smtp_host = 'rgl.com.ph'; // Outgoing Server (SMTP)
 $smtp_port = 465;         // SMTP Port
 $smtp_username = 'info-z@rgl.com.ph';
-$smtp_password = 'TXbb}Wy!rOugt_d('; // email account password
+$smtp_password = '.N~BoFp?ZVWm^lzK'; // email account password
 $receiving_email = info@rgl.com.ph';
 
 
