@@ -18,7 +18,7 @@ $smtp_host = 'rgl.com.ph'; // Outgoing Server (SMTP)
 $smtp_port = 465;         // SMTP Port
 $smtp_username = 'info@rgl.com.ph';
 $smtp_password = 'EdiEdi1218!@'; // email account password
-$receiving_email = info@rgl.com.ph';
+$receiving_email = 'info@rgl.com.ph';
 // ============================================
 
 if (empty($_POST['name']) || empty($_POST['email'])) {
