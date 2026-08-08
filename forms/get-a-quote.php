@@ -1,6 +1,9 @@
 <?php
 /**
- * Get A Quote Form Handler using PHPMailer + z.com / cPanel SMTP
+ * Get A Quote Form Handler using PHPMailer + z.com / cPanel
+ *
+ * Prefers local sendmail (same server → mailbox) so repeat submits do not
+ * open a new SMTP TLS session each time. Falls back to SMTP if needed.
  */
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -9,15 +12,16 @@ use PHPMailer\PHPMailer\Exception;
 require '../vendor/autoload.php';
 
 header('Content-Type: text/plain; charset=UTF-8');
+header('Cache-Control: no-store');
 
 // ============================================
 // z.com cPanel → Mail Client Manual Settings
-// Secure SSL/TLS (Recommended)
+// Secure SSL/TLS (Recommended) — used as fallback
 // ============================================
-$smtp_host = 'rgl.com.ph'; // Outgoing Server (SMTP)
-$smtp_port = 465;         // SMTP Port
+$smtp_host = 'rgl.com.ph';
+$smtp_port = 465;
 $smtp_username = 'info@rgl.com.ph';
-$smtp_password = 'EdiEdi1218!@'; // email account password
+$smtp_password = 'EdiEdi1218!@';
 $receiving_email = 'info@rgl.com.ph';
 // ============================================
 
@@ -50,43 +54,82 @@ if ($message !== '') {
     $email_body .= "\nMessage:\n$message\n";
 }
 
-$mail = new PHPMailer(true);
-
-try {
-    $mail->isSMTP();
-    $mail->Host = $smtp_host;
-    $mail->SMTPAuth = true;
-    $mail->Username = $smtp_username;
-    $mail->Password = $smtp_password;
-    // Port 465 = Secure SSL/TLS (SMTPS)
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-    $mail->Port = $smtp_port;
-    $mail->Timeout = 20;
+/**
+ * Build a configured PHPMailer instance for the given transport.
+ *
+ * @param string $transport 'sendmail' | 'smtp'
+ */
+function rgl_build_mailer($transport, $smtp_host, $smtp_port, $smtp_username, $smtp_password)
+{
+    $mail = new PHPMailer(true);
     $mail->CharSet = 'UTF-8';
-    // Shared hosting certs sometimes fail strict peer checks
-    $mail->SMTPOptions = [
-        'ssl' => [
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-            'allow_self_signed' => true,
-        ],
-    ];
+    $mail->Timeout = 20;
+    $mail->SMTPKeepAlive = false;
 
+    if ($transport === 'sendmail') {
+        // Local MTA — best for same-domain delivery on cPanel / z.com
+        $mail->isSendmail();
+    } else {
+        $mail->isSMTP();
+        $mail->Host = $smtp_host;
+        $mail->SMTPAuth = true;
+        $mail->Username = $smtp_username;
+        $mail->Password = $smtp_password;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = $smtp_port;
+        $mail->SMTPOptions = [
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true,
+            ],
+        ];
+    }
+
+    return $mail;
+}
+
+function rgl_send_inquiry($mail, $smtp_username, $receiving_email, $email, $name, $subject, $email_body)
+{
     $mail->setFrom($smtp_username, 'RGL Website Inquiry');
     $mail->Sender = $smtp_username;
+    $mail->clearAddresses();
+    $mail->clearBCCs();
+    $mail->clearReplyTos();
     $mail->addAddress($receiving_email);
-    // Backup copy so you can verify delivery while testing
     if (strcasecmp($smtp_username, $receiving_email) !== 0) {
         $mail->addBCC($smtp_username);
     }
     $mail->addReplyTo($email, $name);
-
     $mail->isHTML(false);
     $mail->Subject = $subject;
     $mail->Body = $email_body;
-
     $mail->send();
+    if (method_exists($mail, 'smtpClose')) {
+        $mail->smtpClose();
+    }
+}
+
+$lastError = '';
+
+try {
+    $mail = rgl_build_mailer('sendmail', $smtp_host, $smtp_port, $smtp_username, $smtp_password);
+    rgl_send_inquiry($mail, $smtp_username, $receiving_email, $email, $name, $subject, $email_body);
+    echo 'OK';
+    exit;
+} catch (Exception $e) {
+    $lastError = $mail->ErrorInfo ?: $e->getMessage();
+}
+
+try {
+    $mail = rgl_build_mailer('smtp', $smtp_host, $smtp_port, $smtp_username, $smtp_password);
+    rgl_send_inquiry($mail, $smtp_username, $receiving_email, $email, $name, $subject, $email_body);
     echo 'OK';
 } catch (Exception $e) {
-    echo "Unable to send email. Error: {$mail->ErrorInfo}";
+    $detail = $mail->ErrorInfo ?: $e->getMessage();
+    if ($lastError !== '') {
+        echo "Unable to send email. Error: {$detail} (sendmail: {$lastError})";
+    } else {
+        echo "Unable to send email. Error: {$detail}";
+    }
 }
