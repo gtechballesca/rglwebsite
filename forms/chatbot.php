@@ -19,10 +19,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // ============================================
-// GEMINI API CONFIGURATION
+// GEMINI API CONFIGURATION (forms/gemini-config.php)
 // ============================================
-$gemini_api_key = 'AIzaSyAB5mYc34TwxCBkIjUjplmcqjcuH7pe14Y';
-$gemini_model = 'gemini-2.5-flash';
+$geminiConfigPath = __DIR__ . '/gemini-config.php';
+$geminiConfig = is_file($geminiConfigPath) ? require $geminiConfigPath : [];
+$gemini_api_key = isset($geminiConfig['api_key']) ? trim((string) $geminiConfig['api_key']) : '';
+$gemini_model = !empty($geminiConfig['model']) ? (string) $geminiConfig['model'] : 'gemini-2.5-flash';
+
+if ($gemini_api_key === '' || $gemini_api_key === 'YOUR_GEMINI_API_KEY') {
+    ob_end_clean();
+    echo json_encode([
+        'error' => 'Chat is not configured. Add a Gemini API key in forms/gemini-config.php (https://aistudio.google.com/apikey).',
+    ]);
+    exit;
+}
 
 // ============================================
 // SYSTEM CONTEXT - Company Information
@@ -74,7 +84,7 @@ FREQUENTLY ASKED QUESTIONS
 ═══════════════════════════════════════════════
 
 Q: How do I request a quote?
-A: You can fill out the inquiry form on our website, email us at info@rgl.com.ph, or call +639069673630. We respond within 24 hours.
+A: You can fill out the inquiry form on our website, email us at info@rgl.com.ph, or call (02) 3224 2000 / +63 975 785 6585. We respond within 24 hours.
 
 Q: What industries do you serve?
 A: We work with businesses across various industries including finance, healthcare, retail, manufacturing, and startups. Our solutions are tailored to each client's specific needs.
@@ -180,6 +190,14 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 if ($http_code !== 200) {
     ob_end_clean();
     $error_msg = isset($response_data['error']['message']) ? $response_data['error']['message'] : 'API error (HTTP ' . $http_code . ')';
+
+    // Common Google AI key failures — return actionable copy instead of raw API text
+    if (stripos($error_msg, 'suspended') !== false || stripos($error_msg, 'Permission denied') !== false) {
+        $error_msg = 'The Gemini API key was suspended by Google. Create a new key at https://aistudio.google.com/apikey and update forms/gemini-config.php.';
+    } elseif (stripos($error_msg, 'API key not valid') !== false || stripos($error_msg, 'API_KEY_INVALID') !== false) {
+        $error_msg = 'Invalid Gemini API key. Update forms/gemini-config.php with a valid key from https://aistudio.google.com/apikey.';
+    }
+
     echo json_encode(['error' => $error_msg]);
     exit;
 }
