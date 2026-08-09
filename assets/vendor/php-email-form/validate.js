@@ -20,7 +20,7 @@
       }
 
       let action = thisForm.getAttribute('action');
-      let recaptcha = thisForm.getAttribute('data-recaptcha-site-key');
+      let recaptcha = (thisForm.getAttribute('data-recaptcha-site-key') || '').trim();
 
       if (!action) {
         displayError(thisForm, 'The form action property is not set!');
@@ -35,6 +35,14 @@
         return;
       }
 
+      if (!recaptcha || recaptcha === 'YOUR_RECAPTCHA_SITE_KEY') {
+        displayError(
+          thisForm,
+          'reCAPTCHA is not configured. Add your Site Key in index.html (form data-recaptcha-site-key and api.js?render=).'
+        );
+        return;
+      }
+
       thisForm.dataset.submitting = '1';
       thisForm.querySelector('.loading').classList.add('d-block');
       thisForm.querySelector('.error-message').classList.remove('d-block');
@@ -42,32 +50,35 @@
 
       let formData = new FormData(thisForm);
 
-      if (recaptcha) {
-        if (typeof grecaptcha !== 'undefined') {
-          grecaptcha.ready(function () {
-            try {
-              grecaptcha
-                .execute(recaptcha, { action: 'php_email_form_submit' })
-                .then((token) => {
-                  formData.set('recaptcha-response', token);
-                  php_email_form_submit(thisForm, action, formData);
-                })
-                .catch(function (error) {
-                  thisForm.dataset.submitting = '0';
-                  displayError(thisForm, error);
-                });
-            } catch (error) {
+      if (typeof grecaptcha === 'undefined') {
+        thisForm.dataset.submitting = '0';
+        displayError(thisForm, 'The reCAPTCHA script failed to load. Check your Site Key and network.');
+        return;
+      }
+
+      grecaptcha.ready(function () {
+        try {
+          grecaptcha
+            .execute(recaptcha, { action: 'inquiry_submit' })
+            .then((token) => {
+              if (!token) {
+                thisForm.dataset.submitting = '0';
+                displayError(thisForm, 'reCAPTCHA did not return a token. Please refresh and try again.');
+                return;
+              }
+              formData.set('recaptcha-response', token);
+              formData.set('g-recaptcha-response', token);
+              php_email_form_submit(thisForm, action, formData);
+            })
+            .catch(function (error) {
               thisForm.dataset.submitting = '0';
               displayError(thisForm, error);
-            }
-          });
-        } else {
+            });
+        } catch (error) {
           thisForm.dataset.submitting = '0';
-          displayError(thisForm, 'The reCaptcha javascript API url is not loaded!');
+          displayError(thisForm, error);
         }
-      } else {
-        php_email_form_submit(thisForm, action, formData);
-      }
+      });
     });
   });
 

@@ -1604,7 +1604,7 @@
                   <h3>Get Started</h3>
                   <p>Get started with intelligent AI solutions, talent, or training for your organisation today</p>
                 </div>
-                <form action="forms/get-a-quote.php" method="post" class="php-email-form">
+                <form action="forms/get-a-quote.php" method="post" class="php-email-form" data-recaptcha-site-key="YOUR_RECAPTCHA_SITE_KEY">
                   <div class="row g-3">
                     <div class="col-md-6">
                       <div class="form-group">
@@ -1654,6 +1654,11 @@
                       <i class="bi bi-send"></i>
                       Send Message
                     </button>
+                    <p class="recaptcha-note" style="margin:0.75rem 0 0;font-size:0.75rem;opacity:0.75;line-height:1.4;">
+                      This site is protected by reCAPTCHA and the Google
+                      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and
+                      <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
+                    </p>
 
                     <!-- Uncomment this Contact Alternative START -->
                     <div class="contact-alternative">
@@ -1740,7 +1745,9 @@
 
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js?v=7"></script>
+  <!-- Google reCAPTCHA v3 — replace YOUR_RECAPTCHA_SITE_KEY below AND on the form data-recaptcha-site-key -->
+  <script src="https://www.google.com/recaptcha/api.js?render=YOUR_RECAPTCHA_SITE_KEY"></script>
+  <script src="assets/vendor/php-email-form/validate.js?v=8"></script>
   <script src="assets/vendor/aos/aos.js"></script>
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
