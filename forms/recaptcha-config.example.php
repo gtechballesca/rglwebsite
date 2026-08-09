@@ -1,21 +1,20 @@
 <?php
 /**
- * Copy this file to recaptcha-config.php and paste your keys.
+ * SET ASIDE — reCAPTCHA is currently disabled in production.
+ *
+ * To re-enable later:
+ * 1. Copy this file to recaptcha-config.php and paste your keys
+ * 2. Add data-recaptcha-site-key="SITE_KEY" on the inquiry form in index.html
+ * 3. Load: <script src="https://www.google.com/recaptcha/api.js?render=SITE_KEY"></script>
+ * 4. Re-add server-side verification in get-a-quote.php (see git history)
  *
  * Create keys at: https://www.google.com/recaptcha/admin
  * Choose: reCAPTCHA v3
- * Domains: rgl.com.ph, www.rgl.com.ph (add localhost for local tests)
+ * Domains: rgl.com.ph, www.rgl.com.ph
  */
 return [
-    // Public — also paste the same value into index.html (data-recaptcha-site-key + api.js?render=)
     'site_key' => 'YOUR_RECAPTCHA_SITE_KEY',
-
-    // Private — never put this in HTML or JS
     'secret_key' => 'YOUR_RECAPTCHA_SECRET_KEY',
-
-    // 0.0 = bot … 1.0 = human. 0.5 is Google's usual starting point.
     'min_score' => 0.5,
-
-    // Must match grecaptcha.execute(..., { action: '...' }) in validate.js
     'expected_action' => 'inquiry_submit',
 ];
