@@ -29,35 +29,55 @@
   const mobileDrawer = document.getElementById('rgl-mobile-drawer');
 
   function setMobileNavOpen(open) {
-    document.body.classList.toggle('mobile-nav-active', open);
+    if (open) {
+      document.body.classList.add('mobile-nav-active');
+    } else {
+      document.body.classList.remove('mobile-nav-active');
+    }
+
     if (mobileNavToggleBtn) {
-      mobileNavToggleBtn.classList.toggle('bi-list', !open);
-      mobileNavToggleBtn.classList.toggle('bi-x', open);
+      if (open) {
+        mobileNavToggleBtn.classList.remove('bi-list');
+        mobileNavToggleBtn.classList.add('bi-x');
+      } else {
+        mobileNavToggleBtn.classList.add('bi-list');
+        mobileNavToggleBtn.classList.remove('bi-x');
+      }
       mobileNavToggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
       mobileNavToggleBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     }
+
     if (mobileDrawer) {
       if (open) {
         mobileDrawer.hidden = false;
         mobileDrawer.removeAttribute('hidden');
+        mobileDrawer.style.setProperty('display', 'block', 'important');
       } else {
         mobileDrawer.hidden = true;
         mobileDrawer.setAttribute('hidden', '');
+        mobileDrawer.style.setProperty('display', 'none', 'important');
       }
     }
   }
 
-  function mobileNavToogle() {
-    setMobileNavOpen(!document.body.classList.contains('mobile-nav-active'));
-  }
-
-  function closeMobileNav(e) {
+  // Expose for inline onclick fallback on Close button
+  window.rglCloseMobileNav = function(e) {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
     setMobileNavOpen(false);
-  }
+    return false;
+  };
+
+  window.rglToggleMobileNav = function(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setMobileNavOpen(!document.body.classList.contains('mobile-nav-active'));
+    return false;
+  };
 
   if (mobileNavToggleBtn) {
     mobileNavToggleBtn.setAttribute('role', 'button');
@@ -65,37 +85,32 @@
     mobileNavToggleBtn.setAttribute('aria-label', 'Open menu');
     mobileNavToggleBtn.setAttribute('aria-controls', 'rgl-mobile-drawer');
     mobileNavToggleBtn.setAttribute('aria-expanded', 'false');
-    mobileNavToggleBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      mobileNavToogle();
-    });
+    mobileNavToggleBtn.addEventListener('click', window.rglToggleMobileNav);
     mobileNavToggleBtn.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        mobileNavToogle();
+        window.rglToggleMobileNav(e);
       }
     });
   }
 
   if (mobileDrawer) {
-    const backdrop = mobileDrawer.querySelector('.rgl-mobile-drawer-backdrop');
-    const closeBtn = mobileDrawer.querySelector('.rgl-mobile-drawer-close');
-
-    if (backdrop) {
-      backdrop.addEventListener('click', closeMobileNav);
-      backdrop.addEventListener('touchend', closeMobileNav, { passive: false });
-    }
-    if (closeBtn) {
-      closeBtn.addEventListener('click', closeMobileNav);
-    }
-
-    // Tap anywhere outside the white panel closes the menu
-    mobileDrawer.addEventListener('click', function(e) {
-      if (!e.target.closest('.rgl-mobile-drawer-panel')) {
-        closeMobileNav(e);
+    // Single delegated handler — Close button, backdrop, or outside panel
+    function onDrawerPointer(e) {
+      const t = e.target;
+      if (
+        t.closest('.rgl-mobile-drawer-close') ||
+        t.classList.contains('rgl-mobile-drawer-backdrop') ||
+        t === mobileDrawer ||
+        !t.closest('.rgl-mobile-drawer-panel')
+      ) {
+        // Don't steal clicks from nav links
+        if (t.closest('a')) return;
+        window.rglCloseMobileNav(e);
       }
-    });
+    }
+
+    mobileDrawer.addEventListener('click', onDrawerPointer);
+    mobileDrawer.addEventListener('pointerup', onDrawerPointer);
   }
 
   document.addEventListener('keydown', function(e) {

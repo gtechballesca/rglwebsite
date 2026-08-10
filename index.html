@@ -59,7 +59,7 @@
     Cache busting: bump ASSET_VERSION whenever you change CSS/JS (or after each deploy).
     Example: ?v=2026.08.10.1 → ?v=2026.08.10.2
   -->
-  <link href="assets/css/main.css?v=2026.08.10.14" rel="stylesheet">
+  <link href="assets/css/main.css?v=2026.08.10.15" rel="stylesheet">
 
   <!-- Critical topbar styles (inlined so mobile icons never break from CSS cache/deploy lag) -->
   <style id="rgl-topbar-critical">
@@ -190,6 +190,8 @@
         box-shadow: 0 8px 20px rgba(10, 39, 72, 0.35);
         line-height: 1 !important;
         margin: 0 !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
       }
       #rgl-mobile-drawer {
         display: none;
@@ -197,11 +199,9 @@
         inset: 0;
         z-index: 100040;
         box-sizing: border-box;
-        pointer-events: none;
       }
       body.mobile-nav-active #rgl-mobile-drawer {
         display: block !important;
-        pointer-events: auto;
       }
       #rgl-mobile-drawer .rgl-mobile-drawer-backdrop {
         position: absolute;
@@ -216,7 +216,7 @@
       }
       #rgl-mobile-drawer .rgl-mobile-drawer-panel {
         position: relative;
-        z-index: 1;
+        z-index: 2;
         display: block !important;
         background: #ffffff !important;
         border-radius: 12px;
@@ -226,7 +226,6 @@
         list-style: none;
         max-height: calc(100vh - 110px);
         overflow-y: auto;
-        pointer-events: auto;
       }
       #rgl-mobile-drawer .rgl-mobile-drawer-close {
         display: flex !important;
@@ -240,7 +239,10 @@
         font-size: 15px;
         font-weight: 600;
         cursor: pointer;
+        position: relative;
+        z-index: 5;
         -webkit-tap-highlight-color: transparent;
+        pointer-events: auto !important;
       }
       #rgl-mobile-drawer .rgl-mobile-drawer-close span {
         display: inline-flex;
@@ -1993,7 +1995,7 @@
   <div id="rgl-mobile-drawer" hidden>
     <button type="button" class="rgl-mobile-drawer-backdrop" aria-label="Close menu"></button>
     <div class="rgl-mobile-drawer-panel" role="navigation" aria-label="Mobile">
-      <button type="button" class="rgl-mobile-drawer-close" aria-label="Close menu">
+      <button type="button" class="rgl-mobile-drawer-close" aria-label="Close menu" onclick="return window.rglCloseMobileNav(event);">
         <span>Close ✕</span>
       </button>
       <ul>
@@ -2013,7 +2015,7 @@
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/js/main.js?v=2026.08.10.14"></script>
+  <script src="assets/js/main.js?v=2026.08.10.15"></script>
 
   <!-- RGL Chatbot -->
   <style>
