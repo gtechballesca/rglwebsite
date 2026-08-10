@@ -164,51 +164,134 @@ h6 {
   border-bottom: 1px solid rgba(0, 212, 255, 0.15);
 }
 
-.header .topbar .contact-info i {
-  font-style: normal;
-  color: #ffffff;
+.header .topbar > .container {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100%;
+  gap: 12px;
 }
 
-.header .topbar .contact-info i a,
-.header .topbar .contact-info i span {
-  padding-left: 5px;
+.header .topbar .contact-info {
+  display: flex !important;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: flex-start;
+}
+
+.header .topbar .contact-info .topbar-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
   color: rgba(255, 255, 255, 0.95);
+  line-height: 1;
+  text-decoration: none;
+  transition: color 0.3s;
 }
 
-.header .topbar .contact-info i .contact-label {
+.header .topbar .contact-info .topbar-contact i {
+  font-size: 15px;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.header .topbar .contact-info .topbar-contact .contact-label {
   opacity: 0.85;
   font-weight: 500;
-  padding-left: 5px;
-  color: rgba(255, 255, 255, 0.8);
 }
 
-@media (max-width: 575px) {
-
-  .header .topbar .contact-info i a,
-  .header .topbar .contact-info i span {
-    font-size: 13px;
-  }
-}
-
-.header .topbar .contact-info i a {
-  line-height: 0;
-  transition: 0.3s;
-}
-
-.header .topbar .contact-info i a:hover {
+.header .topbar .contact-info .topbar-contact:hover,
+.header .topbar .contact-info .topbar-contact:hover i {
   color: #00d4ff;
-  text-decoration: underline;
+}
+
+.header .topbar .social-links {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  margin-left: auto;
+  gap: 4px;
 }
 
 .header .topbar .social-links a {
-  color: rgba(255, 255, 255, 0.75);
-  line-height: 0;
-  transition: 0.3s;
-  margin-left: 20px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: 0;
+  color: #ffffff !important;
+  line-height: 1;
+  font-size: 16px;
+  text-decoration: none;
+  transition: color 0.3s, transform 0.2s;
 }
 
-.header .topbar .social-links a:hover {
-  color: #00d4ff;
+.header .topbar .social-links a i {
+  font-size: 16px;
+  color: inherit;
+  line-height: 1;
+}
+
+.header .topbar .social-links a:hover,
+.header .topbar .social-links a:hover i {
+  color: #00d4ff !important;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 767px) {
+  .header .topbar .contact-info {
+    justify-content: flex-start;
+    gap: 0;
+  }
+
+  .header .topbar .contact-info .topbar-contact {
+    padding: 0 8px;
+    min-width: 36px;
+    min-height: 36px;
+    justify-content: center;
+  }
+
+  .header .topbar .contact-info .topbar-contact i {
+    font-size: 16px;
+  }
+
+  /* Icons only on small screens — full text stays available via title/aria-label */
+  .header .topbar .contact-info .topbar-contact-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .header .topbar .social-links a {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  .header .topbar .contact-info .topbar-contact {
+    padding: 0 0 0 18px;
+  }
+
+  .header .topbar .contact-info .topbar-contact:first-child {
+    padding-left: 0;
+  }
+
+  .header .topbar .social-links {
+    gap: 8px;
+  }
 }
 
 .header .branding {
