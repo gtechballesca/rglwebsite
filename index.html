@@ -59,7 +59,7 @@
     Cache busting: bump ASSET_VERSION whenever you change CSS/JS (or after each deploy).
     Example: ?v=2026.08.10.1 → ?v=2026.08.10.2
   -->
-  <link href="assets/css/main.css?v=2026.08.10.7" rel="stylesheet">
+  <link href="assets/css/main.css?v=2026.08.10.9" rel="stylesheet">
 
   <!-- Critical topbar styles (inlined so mobile icons never break from CSS cache/deploy lag) -->
   <style id="rgl-topbar-critical">
@@ -148,14 +148,22 @@
     }
   </style>
 
-  <!-- Critical mobile hamburger menu — must not depend on cached main.css -->
+  <!-- Standalone mobile menu (outside header — never clipped by sticky/filter) -->
   <style id="rgl-mobile-nav-critical">
     @media (max-width: 1199.98px) {
-      .navmenu ul {
-        display: none;
-        list-style: none;
-        margin: 0;
-        padding: 12px 0;
+      /* Hide template list; drawer replaces it */
+      #navmenu.navmenu > ul {
+        display: none !important;
+      }
+      /* Kill template overlay — drawer owns the UI */
+      body.mobile-nav-active #navmenu.navmenu {
+        position: static !important;
+        inset: auto !important;
+        width: auto !important;
+        height: auto !important;
+        background: transparent !important;
+        z-index: auto !important;
+        overflow: visible !important;
       }
       body.mobile-nav-active {
         overflow: hidden !important;
@@ -164,48 +172,54 @@
         position: fixed !important;
         top: 18px !important;
         right: 18px !important;
-        z-index: 100002 !important;
+        z-index: 100050 !important;
         color: #ffffff !important;
         font-size: 32px !important;
       }
-      body.mobile-nav-active #navmenu.navmenu {
-        position: fixed !important;
-        inset: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        background: rgba(6, 24, 41, 0.72) !important;
-        z-index: 100000 !important;
+      #rgl-mobile-drawer {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 100040;
+        background: rgba(6, 24, 41, 0.72);
+        padding: 88px 16px 24px;
+        box-sizing: border-box;
+      }
+      body.mobile-nav-active #rgl-mobile-drawer {
         display: block !important;
       }
-      body.mobile-nav-active #navmenu.navmenu > ul {
+      #rgl-mobile-drawer .rgl-mobile-drawer-panel {
         display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        top: 88px !important;
-        left: 16px !important;
-        right: 16px !important;
-        max-height: calc(100vh - 110px) !important;
-        overflow-y: auto !important;
         background: #ffffff !important;
-        border-radius: 12px !important;
-        box-shadow: 0 16px 40px rgba(10, 39, 72, 0.18) !important;
-        z-index: 100001 !important;
-        padding: 8px 0 !important;
+        border-radius: 12px;
+        box-shadow: 0 16px 40px rgba(10, 39, 72, 0.18);
+        padding: 8px 0;
+        margin: 0;
+        list-style: none;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
       }
-      body.mobile-nav-active #navmenu.navmenu > ul > li {
+      #rgl-mobile-drawer .rgl-mobile-drawer-panel li {
         display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
-      body.mobile-nav-active #navmenu.navmenu > ul > li > a {
-        display: flex !important;
-        align-items: center !important;
+      #rgl-mobile-drawer .rgl-mobile-drawer-panel a {
+        display: block !important;
         color: #0b1f3a !important;
+        -webkit-text-fill-color: #0b1f3a !important;
         font-size: 17px !important;
         font-weight: 600 !important;
+        line-height: 1.4 !important;
         padding: 14px 20px !important;
+        text-decoration: none !important;
         opacity: 1 !important;
         visibility: visible !important;
-        text-decoration: none !important;
+      }
+    }
+    @media (min-width: 1200px) {
+      #rgl-mobile-drawer {
+        display: none !important;
       }
     }
   </style>
@@ -1874,6 +1888,16 @@
   <!-- Preloader -->
   <div id="preloader"></div>
 
+  <!-- Mobile nav drawer: lives on body so sticky header cannot clip it -->
+  <div id="rgl-mobile-drawer" hidden>
+    <ul class="rgl-mobile-drawer-panel">
+      <li><a href="#hero" style="color:#0b1f3a;display:block;padding:14px 20px;font-size:17px;font-weight:600;text-decoration:none;">Home</a></li>
+      <li><a href="#about" style="color:#0b1f3a;display:block;padding:14px 20px;font-size:17px;font-weight:600;text-decoration:none;">About</a></li>
+      <li><a href="#services" style="color:#0b1f3a;display:block;padding:14px 20px;font-size:17px;font-weight:600;text-decoration:none;">Services</a></li>
+      <li><a href="#call-to-action" style="color:#0b1f3a;display:block;padding:14px 20px;font-size:17px;font-weight:600;text-decoration:none;">Contact</a></li>
+    </ul>
+  </div>
+
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js?v=2026.08.10.4"></script>
@@ -1882,7 +1906,7 @@
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/js/main.js?v=2026.08.10.7"></script>
+  <script src="assets/js/main.js?v=2026.08.10.8"></script>
 
   <!-- RGL Chatbot -->
   <style>

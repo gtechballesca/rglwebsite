@@ -1140,6 +1140,8 @@ section,
 }
 
 .hero .hero-content .hero-sentences .hero-sentence-item {
+  --hero-border-angle: 0deg;
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -1148,15 +1150,91 @@ section,
   padding: 12px 14px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(20, 82, 157, 0.1);
+  border: 1px solid rgba(20, 82, 157, 0.12);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Traveling blue highlight along the card edge */
+.hero .hero-content .hero-sentences .hero-sentence-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--hero-border-angle),
+    rgba(20, 82, 157, 0.08) 0deg,
+    rgba(20, 82, 157, 0.12) 60deg,
+    #14529d 110deg,
+    #00d4ff 145deg,
+    #14529d 180deg,
+    rgba(20, 82, 157, 0.12) 230deg,
+    rgba(20, 82, 157, 0.08) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+  animation: hero-border-travel 4.5s linear infinite;
+  opacity: 0.95;
+}
+
+.hero .hero-content .hero-sentences .hero-sentence-item:nth-child(2)::before {
+  animation-delay: -1.5s;
+}
+
+.hero .hero-content .hero-sentences .hero-sentence-item:nth-child(3)::before {
+  animation-delay: -3s;
+}
+
+.hero .hero-content .hero-sentences .hero-sentence-item > * {
+  position: relative;
+  z-index: 2;
 }
 
 .hero .hero-content .hero-sentences .hero-sentence-item:hover {
-  border-color: rgba(0, 212, 255, 0.45);
+  border-color: rgba(0, 212, 255, 0.35);
   transform: translateX(4px);
+  box-shadow: 0 0 0 1px rgba(20, 82, 157, 0.08), 0 8px 24px rgba(20, 82, 157, 0.1);
+}
+
+.hero .hero-content .hero-sentences .hero-sentence-item:hover::before {
+  animation-duration: 2.2s;
+  opacity: 1;
+}
+
+@property --hero-border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes hero-border-travel {
+  to {
+    --hero-border-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .hero-content .hero-sentences .hero-sentence-item::before {
+    animation: none;
+    background: linear-gradient(
+      120deg,
+      rgba(20, 82, 157, 0.35),
+      rgba(0, 212, 255, 0.55),
+      rgba(20, 82, 157, 0.35)
+    );
+  }
 }
 
 .hero .hero-content .hero-sentences .hero-sentence-icon {
