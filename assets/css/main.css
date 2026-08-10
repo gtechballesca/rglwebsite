@@ -1650,7 +1650,6 @@ section,
 }
 
 .services .service-card {
-  --hero-border-angle: 0deg;
   background-color: var(--surface-color);
   padding: 2.5rem;
   border-radius: 8px;
@@ -1660,36 +1659,44 @@ section,
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   overflow: hidden;
   isolation: isolate;
-  border: 1px solid rgba(20, 82, 157, 0.1);
+  border: 1px solid rgba(20, 82, 157, 0.14);
 }
 
 /*
- * Blue edge highlight — uses a rotating conic layer (transform),
- * which works on mobile Safari where @property angle animation often fails.
+ * Blue edge highlight — transform-only spin (no @property / translate conflict).
+ * Always visible so it works in production without relying on hover.
  */
 .services .service-card::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 220%;
-  height: 220%;
-  translate: -50% -50%;
-  border-radius: 50%;
+  width: 250%;
+  aspect-ratio: 1;
+  height: auto;
   background: conic-gradient(
     from 0deg,
-    rgba(20, 82, 157, 0.05) 0deg,
-    rgba(20, 82, 157, 0.08) 200deg,
-    #14529d 250deg,
-    #00d4ff 290deg,
+    transparent 0deg,
+    transparent 210deg,
+    rgba(20, 82, 157, 0.35) 240deg,
+    #14529d 270deg,
+    #00d4ff 300deg,
     #14529d 330deg,
-    rgba(20, 82, 157, 0.05) 360deg
+    transparent 360deg
   );
-  animation: rgl-border-spin 3.2s linear infinite;
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: rgl-border-spin 2.8s linear infinite;
+  opacity: 1;
   pointer-events: none;
   z-index: 0;
+}
+
+.services .row > .col-lg-4:nth-child(2) .service-card::before {
+  animation-delay: -0.9s;
+}
+
+.services .row > .col-lg-4:nth-child(3) .service-card::before {
+  animation-delay: -1.8s;
 }
 
 /* Inner fill so only the edge glow shows */
@@ -1698,7 +1705,7 @@ section,
   position: absolute;
   inset: 2px;
   border-radius: 6px;
-  background: var(--surface-color);
+  background: var(--surface-color, #ffffff);
   pointer-events: none;
   z-index: 1;
 }
@@ -1711,55 +1718,30 @@ section,
 .services .service-card:hover,
 .services .service-card:focus-within {
   transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(20, 82, 157, 0.12);
-  border-color: rgba(0, 212, 255, 0.25);
+  box-shadow: 0 15px 35px rgba(20, 82, 157, 0.14);
+  border-color: rgba(0, 212, 255, 0.35);
 }
 
 .services .service-card:hover::before,
-.services .service-card:focus-within::before,
-.services .service-card.is-highlighted::before {
-  opacity: 1;
-}
-
-/* Small screens / touch: no reliable hover — keep highlight running */
-@media (max-width: 991.98px) {
-  .services .service-card::before {
-    opacity: 1;
-  }
-
-  .services .service-card:nth-child(2)::before,
-  .services .row > .col-lg-4:nth-child(2) .service-card::before {
-    animation-delay: -1.1s;
-  }
-
-  .services .service-card:nth-child(3)::before,
-  .services .row > .col-lg-4:nth-child(3) .service-card::before {
-    animation-delay: -2.2s;
-  }
-}
-
-@media (hover: none) {
-  .services .service-card::before {
-    opacity: 1;
-  }
+.services .service-card:focus-within::before {
+  animation-duration: 1.6s;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .services .service-card::before {
     animation: none;
-    opacity: 1;
     background: linear-gradient(
       120deg,
-      rgba(20, 82, 157, 0.35),
-      rgba(0, 212, 255, 0.55),
-      rgba(20, 82, 157, 0.35)
+      rgba(20, 82, 157, 0.45),
+      rgba(0, 212, 255, 0.65),
+      rgba(20, 82, 157, 0.45)
     );
   }
 }
 
 @keyframes rgl-border-spin {
   to {
-    transform: rotate(360deg);
+    transform: translate(-50%, -50%) rotate(360deg);
   }
 }
 
@@ -6115,21 +6097,24 @@ body {
     top: 50%;
     left: 50%;
     width: 220%;
-    height: 220%;
+    height: auto;
+    aspect-ratio: 1;
     inset: auto;
-    translate: -50% -50%;
+    translate: none;
     padding: 0;
-    border-radius: 50%;
+    border-radius: 0;
     -webkit-mask: none;
     mask: none;
+    transform: translate(-50%, -50%) rotate(0deg);
     background: conic-gradient(
       from 0deg,
-      rgba(20, 82, 157, 0.05) 0deg,
-      rgba(20, 82, 157, 0.08) 200deg,
-      #14529d 250deg,
-      #00d4ff 290deg,
+      transparent 0deg,
+      transparent 210deg,
+      rgba(20, 82, 157, 0.35) 240deg,
+      #14529d 270deg,
+      #00d4ff 300deg,
       #14529d 330deg,
-      rgba(20, 82, 157, 0.05) 360deg
+      transparent 360deg
     );
   }
 

@@ -59,7 +59,7 @@
     Cache busting: bump ASSET_VERSION whenever you change CSS/JS (or after each deploy).
     Example: ?v=2026.08.10.1 → ?v=2026.08.10.2
   -->
-  <link href="assets/css/main.css?v=2026.08.10.18" rel="stylesheet">
+  <link href="assets/css/main.css?v=2026.08.10.19" rel="stylesheet">
 
   <!-- Critical topbar styles (inlined so mobile icons never break from CSS cache/deploy lag) -->
   <style id="rgl-topbar-critical">
@@ -278,6 +278,74 @@
     @media (min-width: 1200px) {
       #rgl-mobile-drawer {
         display: none !important;
+      }
+    }
+  </style>
+
+  <!-- Critical service-card border animation (works even if main.css deploy/cache lags) -->
+  <style id="rgl-service-card-critical">
+    @keyframes rgl-border-spin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    .services .service-card {
+      position: relative !important;
+      overflow: hidden !important;
+      isolation: isolate;
+      border: 1px solid rgba(20, 82, 157, 0.14) !important;
+    }
+    .services .service-card::before {
+      content: "" !important;
+      position: absolute !important;
+      top: 50% !important;
+      left: 50% !important;
+      width: 250% !important;
+      aspect-ratio: 1 !important;
+      height: auto !important;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        transparent 210deg,
+        rgba(20, 82, 157, 0.35) 240deg,
+        #14529d 270deg,
+        #00d4ff 300deg,
+        #14529d 330deg,
+        transparent 360deg
+      ) !important;
+      transform: translate(-50%, -50%) rotate(0deg) !important;
+      animation: rgl-border-spin 2.8s linear infinite !important;
+      opacity: 1 !important;
+      pointer-events: none !important;
+      z-index: 0 !important;
+      border-radius: 0 !important;
+      translate: none !important;
+      inset: auto !important;
+      padding: 0 !important;
+      -webkit-mask: none !important;
+      mask: none !important;
+    }
+    .services .row > .col-lg-4:nth-child(2) .service-card::before {
+      animation-delay: -0.9s !important;
+    }
+    .services .row > .col-lg-4:nth-child(3) .service-card::before {
+      animation-delay: -1.8s !important;
+    }
+    .services .service-card::after {
+      content: "" !important;
+      position: absolute !important;
+      inset: 2px !important;
+      border-radius: 6px !important;
+      background: #ffffff !important;
+      pointer-events: none !important;
+      z-index: 1 !important;
+    }
+    .services .service-card > * {
+      position: relative !important;
+      z-index: 2 !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .services .service-card::before {
+        animation: none !important;
+        background: linear-gradient(120deg, #14529d, #00d4ff, #14529d) !important;
       }
     }
   </style>
@@ -821,18 +889,19 @@
             top: 50%;
             left: 50%;
             width: 220%;
-            height: 220%;
-            translate: -50% -50%;
-            border-radius: 50%;
+            aspect-ratio: 1;
+            height: auto;
             background: conic-gradient(
               from 0deg,
-              rgba(20, 82, 157, 0.05) 0deg,
-              rgba(20, 82, 157, 0.08) 200deg,
-              #14529d 250deg,
-              #00d4ff 290deg,
+              transparent 0deg,
+              transparent 210deg,
+              rgba(20, 82, 157, 0.35) 240deg,
+              #14529d 270deg,
+              #00d4ff 300deg,
               #14529d 330deg,
-              rgba(20, 82, 157, 0.05) 360deg
+              transparent 360deg
             );
+            transform: translate(-50%, -50%) rotate(0deg);
             animation: rgl-border-spin 3.2s linear infinite;
             opacity: 0;
             transition: opacity 0.25s ease;
