@@ -14,23 +14,40 @@ require '../vendor/autoload.php';
 header('Content-Type: text/plain; charset=UTF-8');
 header('Cache-Control: no-store');
 
+// ============================================
+// SMTP settings (working defaults for rgl.com.ph)
+// Optional override: forms/mail-config.php on the server
+// ============================================
+$smtp_host = 'rgl.com.ph';
+$smtp_port = 465;
+$smtp_username = 'info@rgl.com.ph';
+$smtp_password = 'EdiEdi1218!@';
+$receiving_email = 'info@rgl.com.ph';
+$from_name = 'RGL Website Inquiry';
+
 $mailConfigPath = __DIR__ . '/mail-config.php';
-if (!is_file($mailConfigPath)) {
-    echo 'Contact form is temporarily unavailable. Please email info@rgl.com.ph.';
-    exit;
-}
-
-$mailConfig = require $mailConfigPath;
-$smtp_host = isset($mailConfig['smtp_host']) ? (string) $mailConfig['smtp_host'] : 'rgl.com.ph';
-$smtp_port = isset($mailConfig['smtp_port']) ? (int) $mailConfig['smtp_port'] : 465;
-$smtp_username = isset($mailConfig['smtp_username']) ? (string) $mailConfig['smtp_username'] : '';
-$smtp_password = isset($mailConfig['smtp_password']) ? (string) $mailConfig['smtp_password'] : '';
-$receiving_email = isset($mailConfig['receiving_email']) ? (string) $mailConfig['receiving_email'] : $smtp_username;
-$from_name = !empty($mailConfig['from_name']) ? (string) $mailConfig['from_name'] : 'RGL Website Inquiry';
-
-if ($smtp_username === '' || $smtp_password === '' || $smtp_password === 'YOUR_MAILBOX_PASSWORD') {
-    echo 'Contact form is temporarily unavailable. Please email info@rgl.com.ph.';
-    exit;
+if (is_file($mailConfigPath)) {
+    $mailConfig = require $mailConfigPath;
+    if (is_array($mailConfig)) {
+        if (!empty($mailConfig['smtp_host'])) {
+            $smtp_host = (string) $mailConfig['smtp_host'];
+        }
+        if (!empty($mailConfig['smtp_port'])) {
+            $smtp_port = (int) $mailConfig['smtp_port'];
+        }
+        if (!empty($mailConfig['smtp_username'])) {
+            $smtp_username = (string) $mailConfig['smtp_username'];
+        }
+        if (!empty($mailConfig['smtp_password']) && $mailConfig['smtp_password'] !== 'YOUR_MAILBOX_PASSWORD') {
+            $smtp_password = (string) $mailConfig['smtp_password'];
+        }
+        if (!empty($mailConfig['receiving_email'])) {
+            $receiving_email = (string) $mailConfig['receiving_email'];
+        }
+        if (!empty($mailConfig['from_name'])) {
+            $from_name = (string) $mailConfig['from_name'];
+        }
+    }
 }
 
 if (empty($_POST['name']) || empty($_POST['email'])) {
