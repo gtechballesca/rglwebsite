@@ -14,16 +14,24 @@ require '../vendor/autoload.php';
 header('Content-Type: text/plain; charset=UTF-8');
 header('Cache-Control: no-store');
 
-// ============================================
-// z.com cPanel → Mail Client Manual Settings
-// Secure SSL/TLS (Recommended) — used as fallback
-// ============================================
-$smtp_host = 'rgl.com.ph';
-$smtp_port = 465;
-$smtp_username = 'info@rgl.com.ph';
-$smtp_password = 'EdiEdi1218!@';
-$receiving_email = 'info@rgl.com.ph';
-// ============================================
+$mailConfigPath = __DIR__ . '/mail-config.php';
+if (!is_file($mailConfigPath)) {
+    echo 'Contact form is temporarily unavailable. Please email info@rgl.com.ph.';
+    exit;
+}
+
+$mailConfig = require $mailConfigPath;
+$smtp_host = isset($mailConfig['smtp_host']) ? (string) $mailConfig['smtp_host'] : 'rgl.com.ph';
+$smtp_port = isset($mailConfig['smtp_port']) ? (int) $mailConfig['smtp_port'] : 465;
+$smtp_username = isset($mailConfig['smtp_username']) ? (string) $mailConfig['smtp_username'] : '';
+$smtp_password = isset($mailConfig['smtp_password']) ? (string) $mailConfig['smtp_password'] : '';
+$receiving_email = isset($mailConfig['receiving_email']) ? (string) $mailConfig['receiving_email'] : $smtp_username;
+$from_name = !empty($mailConfig['from_name']) ? (string) $mailConfig['from_name'] : 'RGL Website Inquiry';
+
+if ($smtp_username === '' || $smtp_password === '' || $smtp_password === 'YOUR_MAILBOX_PASSWORD') {
+    echo 'Contact form is temporarily unavailable. Please email info@rgl.com.ph.';
+    exit;
+}
 
 if (empty($_POST['name']) || empty($_POST['email'])) {
     echo 'Please fill in all required fields.';
@@ -36,6 +44,11 @@ $phone = isset($_POST['phone']) ? htmlspecialchars(strip_tags(trim($_POST['phone
 $message = isset($_POST['message']) ? htmlspecialchars(strip_tags(trim($_POST['message']))) : '';
 $type = isset($_POST['type']) ? htmlspecialchars(strip_tags(trim($_POST['type']))) : '';
 $company = isset($_POST['company']) ? htmlspecialchars(strip_tags(trim($_POST['company']))) : '';
+
+if (strlen($name) > 120 || strlen($company) > 160 || strlen($phone) > 40 || strlen($type) > 120 || strlen($message) > 5000) {
+    echo 'One or more fields are too long. Please shorten your message and try again.';
+    exit;
+}
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo 'Invalid email format.';
@@ -55,8 +68,6 @@ if ($message !== '') {
 }
 
 /**
- * Build a configured PHPMailer instance for the given transport.
- *
  * @param string $transport 'sendmail' | 'smtp'
  */
 function rgl_build_mailer($transport, $smtp_host, $smtp_port, $smtp_username, $smtp_password)
@@ -67,7 +78,6 @@ function rgl_build_mailer($transport, $smtp_host, $smtp_port, $smtp_username, $s
     $mail->SMTPKeepAlive = false;
 
     if ($transport === 'sendmail') {
-        // Local MTA — best for same-domain delivery on cPanel / z.com
         $mail->isSendmail();
     } else {
         $mail->isSMTP();
@@ -77,6 +87,7 @@ function rgl_build_mailer($transport, $smtp_host, $smtp_port, $smtp_username, $s
         $mail->Password = $smtp_password;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = $smtp_port;
+        // Kept for shared-hosting cert quirks; prefer fixing the cert chain when possible
         $mail->SMTPOptions = [
             'ssl' => [
                 'verify_peer' => false,
@@ -89,9 +100,9 @@ function rgl_build_mailer($transport, $smtp_host, $smtp_port, $smtp_username, $s
     return $mail;
 }
 
-function rgl_send_inquiry($mail, $smtp_username, $receiving_email, $email, $name, $subject, $email_body)
+function rgl_send_inquiry($mail, $smtp_username, $receiving_email, $from_name, $email, $name, $subject, $email_body)
 {
-    $mail->setFrom($smtp_username, 'RGL Website Inquiry');
+    $mail->setFrom($smtp_username, $from_name);
     $mail->Sender = $smtp_username;
     $mail->clearAddresses();
     $mail->clearBCCs();
@@ -110,26 +121,20 @@ function rgl_send_inquiry($mail, $smtp_username, $receiving_email, $email, $name
     }
 }
 
-$lastError = '';
-
 try {
     $mail = rgl_build_mailer('sendmail', $smtp_host, $smtp_port, $smtp_username, $smtp_password);
-    rgl_send_inquiry($mail, $smtp_username, $receiving_email, $email, $name, $subject, $email_body);
+    rgl_send_inquiry($mail, $smtp_username, $receiving_email, $from_name, $email, $name, $subject, $email_body);
     echo 'OK';
     exit;
 } catch (Exception $e) {
-    $lastError = $mail->ErrorInfo ?: $e->getMessage();
+    // fall through to SMTP
 }
 
 try {
     $mail = rgl_build_mailer('smtp', $smtp_host, $smtp_port, $smtp_username, $smtp_password);
-    rgl_send_inquiry($mail, $smtp_username, $receiving_email, $email, $name, $subject, $email_body);
+    rgl_send_inquiry($mail, $smtp_username, $receiving_email, $from_name, $email, $name, $subject, $email_body);
     echo 'OK';
 } catch (Exception $e) {
-    $detail = $mail->ErrorInfo ?: $e->getMessage();
-    if ($lastError !== '') {
-        echo "Unable to send email. Error: {$detail} (sendmail: {$lastError})";
-    } else {
-        echo "Unable to send email. Error: {$detail}";
-    }
+    error_log('RGL get-a-quote mail failed: ' . ($mail->ErrorInfo ?: $e->getMessage()));
+    echo 'Unable to send email right now. Please try again or email info@rgl.com.ph.';
 }

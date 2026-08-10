@@ -1,0 +1,13 @@
+# Secrets — never commit live keys/passwords
+forms/mail-config.php
+forms/gemini-config.php
+forms/recaptcha-config.php
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
