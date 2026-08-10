@@ -1149,52 +1149,52 @@ section,
   line-height: 1.5;
   padding: 12px 14px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.55);
+  background: #ffffff;
   border: 1px solid rgba(20, 82, 157, 0.12);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
   isolation: isolate;
 }
 
-/* Traveling blue highlight along the card edge */
+/* Traveling blue highlight — hover only */
 .hero .hero-content .hero-sentences .hero-sentence-item::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.5px;
+  top: 50%;
+  left: 50%;
+  width: 180%;
+  height: 180%;
+  min-width: 280px;
+  min-height: 280px;
   background: conic-gradient(
-    from var(--hero-border-angle),
-    rgba(20, 82, 157, 0.08) 0deg,
-    rgba(20, 82, 157, 0.12) 60deg,
-    #14529d 110deg,
-    #00d4ff 145deg,
-    #14529d 180deg,
-    rgba(20, 82, 157, 0.12) 230deg,
-    rgba(20, 82, 157, 0.08) 360deg
+    from 0deg,
+    transparent 0 62%,
+    rgba(20, 82, 157, 0.2) 68%,
+    #14529d 74%,
+    #00d4ff 80%,
+    #14529d 86%,
+    transparent 92% 100%
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
+  animation: rgl-border-spin 2.8s linear infinite;
+  animation-play-state: paused;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-mask: none;
+  mask: none;
+}
+
+.hero .hero-content .hero-sentences .hero-sentence-item::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  background: #ffffff;
   pointer-events: none;
   z-index: 1;
-  animation: hero-border-travel 4.5s linear infinite;
-  opacity: 0.95;
-}
-
-.hero .hero-content .hero-sentences .hero-sentence-item:nth-child(2)::before {
-  animation-delay: -1.5s;
-}
-
-.hero .hero-content .hero-sentences .hero-sentence-item:nth-child(3)::before {
-  animation-delay: -3s;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
 .hero .hero-content .hero-sentences .hero-sentence-item > * {
@@ -1203,13 +1203,21 @@ section,
 }
 
 .hero .hero-content .hero-sentences .hero-sentence-item:hover {
-  border-color: rgba(0, 212, 255, 0.35);
+  border-color: rgba(0, 212, 255, 0.55);
   transform: translateX(4px);
-  box-shadow: 0 0 0 1px rgba(20, 82, 157, 0.08), 0 8px 24px rgba(20, 82, 157, 0.1);
+  box-shadow:
+    0 8px 24px rgba(10, 39, 72, 0.06),
+    0 0 0 1px rgba(20, 82, 157, 0.2),
+    0 0 12px rgba(0, 212, 255, 0.05);
 }
 
 .hero .hero-content .hero-sentences .hero-sentence-item:hover::before {
-  animation-duration: 2.2s;
+  opacity: 1;
+  animation-play-state: running;
+  animation-duration: 1.8s;
+}
+
+.hero .hero-content .hero-sentences .hero-sentence-item:hover::after {
   opacity: 1;
 }
 
@@ -1226,7 +1234,7 @@ section,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero .hero-content .hero-sentences .hero-sentence-item::before {
+  .hero .hero-content .hero-sentences .hero-sentence-item:hover::before {
     animation: none;
     background: linear-gradient(
       120deg,
@@ -1663,43 +1671,35 @@ section,
 }
 
 /*
- * Blue edge highlight — transform-only spin (no @property / translate conflict).
- * Always visible so it works in production without relying on hover.
+ * Blue edge highlight — hover only.
+ * Never set transform with !important (that freezes the animation).
  */
 .services .service-card::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 250%;
-  aspect-ratio: 1;
-  height: auto;
+  width: 160%;
+  height: 160%;
+  min-width: 320px;
+  min-height: 320px;
   background: conic-gradient(
     from 0deg,
-    transparent 0deg,
-    transparent 210deg,
-    rgba(20, 82, 157, 0.35) 240deg,
-    #14529d 270deg,
-    #00d4ff 300deg,
-    #14529d 330deg,
-    transparent 360deg
+    transparent 0 62%,
+    rgba(20, 82, 157, 0.15) 68%,
+    #14529d 74%,
+    #00d4ff 80%,
+    #14529d 86%,
+    transparent 92% 100%
   );
-  transform: translate(-50%, -50%) rotate(0deg);
-  animation: rgl-border-spin 2.8s linear infinite;
-  opacity: 1;
+  animation: rgl-border-spin 2.4s linear infinite;
+  animation-play-state: paused;
+  opacity: 0;
+  transition: opacity 0.25s ease;
   pointer-events: none;
   z-index: 0;
 }
 
-.services .row > .col-lg-4:nth-child(2) .service-card::before {
-  animation-delay: -0.9s;
-}
-
-.services .row > .col-lg-4:nth-child(3) .service-card::before {
-  animation-delay: -1.8s;
-}
-
-/* Inner fill so only the edge glow shows */
 .services .service-card::after {
   content: "";
   position: absolute;
@@ -1708,6 +1708,8 @@ section,
   background: var(--surface-color, #ffffff);
   pointer-events: none;
   z-index: 1;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
 .services .service-card > * {
@@ -1724,11 +1726,19 @@ section,
 
 .services .service-card:hover::before,
 .services .service-card:focus-within::before {
-  animation-duration: 1.6s;
+  opacity: 1;
+  animation-play-state: running;
+  animation-duration: 1.5s;
+}
+
+.services .service-card:hover::after,
+.services .service-card:focus-within::after {
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .services .service-card::before {
+  .services .service-card:hover::before,
+  .services .service-card:focus-within::before {
     animation: none;
     background: linear-gradient(
       120deg,
@@ -1740,6 +1750,9 @@ section,
 }
 
 @keyframes rgl-border-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
   to {
     transform: translate(-50%, -50%) rotate(360deg);
   }
@@ -6002,7 +6015,7 @@ body {
 }
 
 .key-principles .principle-item {
-  background: transparent !important;
+  background: #ffffff !important;
   border-color: rgba(20, 82, 157, 0.12) !important;
 }
 
@@ -6088,66 +6101,19 @@ body {
   animation: hero-border-travel 2.5s linear infinite;
 }
 
-/* Touch / small screens: run highlight without hover (transform spin works on mobile) */
+/* Touch / small screens: still hover/tap only for these cards */
 @media (max-width: 991.98px), (hover: none) {
-  .cta-box::before,
-  .rgl-advantage .loop-step::before {
+  .cta-box:hover::before,
+  .rgl-advantage .loop-step:hover::before,
+  .differentiators .diff-card:hover::after {
     opacity: 1;
-    animation: rgl-border-spin 3.2s linear infinite;
-    top: 50%;
-    left: 50%;
-    width: 220%;
-    height: auto;
-    aspect-ratio: 1;
-    inset: auto;
-    translate: none;
-    padding: 0;
-    border-radius: 0;
-    -webkit-mask: none;
-    mask: none;
-    transform: translate(-50%, -50%) rotate(0deg);
-    background: conic-gradient(
-      from 0deg,
-      transparent 0deg,
-      transparent 210deg,
-      rgba(20, 82, 157, 0.35) 240deg,
-      #14529d 270deg,
-      #00d4ff 300deg,
-      #14529d 330deg,
-      transparent 360deg
-    );
-  }
-
-  .cta-box::after,
-  .rgl-advantage .loop-step::after {
-    content: "";
-    position: absolute;
-    inset: 2px;
-    border-radius: inherit;
-    background: var(--rgl-surface, var(--surface-color, #fff));
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  .differentiators .diff-card::after {
-    opacity: 1;
-    animation: hero-border-travel 3.2s linear infinite;
-  }
-
-  .differentiators .diff-card {
-    box-shadow:
-      0 12px 40px rgba(10, 39, 72, 0.08),
-      0 0 0 1px rgba(0, 212, 255, 0.28);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cta-box:hover::before,
   .rgl-advantage .loop-step:hover::before,
-  .differentiators .diff-card:hover::after,
-  .cta-box::before,
-  .rgl-advantage .loop-step::before,
-  .differentiators .diff-card::after {
+  .differentiators .diff-card:hover::after {
     animation: none;
     opacity: 1;
     background: linear-gradient(
