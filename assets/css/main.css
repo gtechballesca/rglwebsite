@@ -12,47 +12,49 @@
 # Font & Color Variables
 # Help: https://bootstrapmade.com/color-system/
 --------------------------------------------------------------*/
-/* Fonts */
+/* Fonts — Futuristic AI (Sora + DM Sans) */
 :root {
-  --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --heading-font: "Ubuntu",  sans-serif;
-  --nav-font: "Lato",  sans-serif;
+  --default-font: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --heading-font: "Sora", system-ui, sans-serif;
+  --nav-font: "DM Sans", system-ui, sans-serif;
 }
 
-/* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
+/* Global Colors — RGL futuristic blue */
 :root { 
-  --background-color: #f9fafb; /* Background color for the entire website, including individual sections */
-  --default-color: #333333; /* Default color used for the majority of the text content across the entire website */
-  --heading-color: #102a49; /* Color for headings, subheadings and title throughout the website */
-  --accent-color: #14529d; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
-  --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
-  --contrast-color: #ffffff; /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
+  --background-color: #f0f5fb;
+  --default-color: #2a3a4d;
+  --heading-color: #0b1f3a;
+  --accent-color: #14529d;
+  --surface-color: #ffffff;
+  --contrast-color: #ffffff;
+  --rgl-cyan: #00d4ff;
+  --rgl-navy-deep: #061829;
 }
 
-/* Nav Menu Colors - The following color variables are used specifically for the navigation menu. They are separate from the global colors to allow for more customization options */
+/* Nav Menu Colors */
 :root {
-  --nav-color: #333333;  /* The default color of the main navmenu links */
-  --nav-hover-color: #14529d; /* Applied to main navmenu links when they are hovered over or active */
-  --nav-mobile-background-color: #ffffff; /* Used as the background color for mobile navigation menu */
-  --nav-dropdown-background-color: #ffffff; /* Used as the background color for dropdown items that appear when hovering over primary navigation items */
-  --nav-dropdown-color: #333333; /* Used for navigation links of the dropdown items in the navigation menu. */
-  --nav-dropdown-hover-color: #14529d; /* Similar to --nav-hover-color, this color is applied to dropdown navigation links when they are hovered over. */
+  --nav-color: #2a3a4d;
+  --nav-hover-color: #14529d;
+  --nav-mobile-background-color: #ffffff;
+  --nav-dropdown-background-color: #ffffff;
+  --nav-dropdown-color: #2a3a4d;
+  --nav-dropdown-hover-color: #14529d;
 }
 
-/* Color Presets - These classes override global colors when applied to any section or element, providing reuse of the sam color scheme. */
+/* Color Presets */
 
 .light-background {
-  --background-color: #eff1f3;
+  --background-color: #e8f1fa;
   --surface-color: #ffffff;
 }
 
 .dark-background {
-  --background-color: #14529d;
+  --background-color: #0a2748;
   --default-color: #ffffff;
   --heading-color: #ffffff;
-  --accent-color: #ffffff;
-  --surface-color: #252525;
-  --contrast-color: #ffffff;
+  --accent-color: #00d4ff;
+  --surface-color: #0d3158;
+  --contrast-color: #061829;
 }
 
 /* Smooth scroll */
@@ -154,11 +156,12 @@ h6 {
 }
 
 .header .topbar {
-  background-color: var(--background-color);
+  background: linear-gradient(90deg, #061829 0%, #0a2748 50%, #14529d 100%);
   height: 40px;
   padding: 0;
   font-size: 14px;
   transition: all 0.5s;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.15);
 }
 
 .header .topbar .contact-info i {
@@ -737,12 +740,13 @@ section,
 }
 
 .section-title h2 {
+  font-family: var(--heading-font);
   font-size: 24px;
   font-weight: 700;
   padding: 0;
   line-height: 1px;
   margin: 0;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   position: relative;
 }
@@ -750,10 +754,11 @@ section,
 .section-title h2::after {
   content: "";
   width: 120px;
-  height: 1px;
+  height: 2px;
   display: inline-block;
-  background: var(--accent-color);
+  background: linear-gradient(90deg, #14529d, #00d4ff);
   margin: 4px 10px;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
 }
 
 .section-title p {
@@ -770,27 +775,124 @@ section,
 .hero {
   position: relative;
   padding: 120px 0;
-  background-color: var(--background-color);
+  background: var(--rgl-gradient-hero, linear-gradient(165deg, #eaf3fc 0%, #f7fbff 45%, #e4eef9 100%));
   overflow: hidden;
 }
 
+/* Original hero photo — kept under the blue AI atmosphere */
 .hero::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
+  z-index: 0;
   background-image: url("../img/construction/showcase-5.jpg");
   background-size: cover;
   background-position: center;
-  opacity: 10%;
-  z-index: 0;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.hero .hero-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero .hero-grid {
+  position: absolute;
+  inset: -20%;
+  background-image:
+    linear-gradient(rgba(20, 82, 157, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 82, 157, 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 75%);
+  animation: rglGridDrift 28s linear infinite;
+}
+
+.hero .hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.hero .hero-orb-a {
+  width: min(42vw, 420px);
+  height: min(42vw, 420px);
+  top: -8%;
+  right: 8%;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.55) 0%, rgba(26, 125, 255, 0.2) 45%, transparent 70%);
+  animation: rglOrbFloatA 14s ease-in-out infinite;
+}
+
+.hero .hero-orb-b {
+  width: min(36vw, 340px);
+  height: min(36vw, 340px);
+  bottom: -5%;
+  left: -4%;
+  background: radial-gradient(circle, rgba(20, 82, 157, 0.45) 0%, rgba(10, 39, 72, 0.15) 50%, transparent 70%);
+  animation: rglOrbFloatB 18s ease-in-out infinite;
+}
+
+.hero .hero-orb-c {
+  width: min(28vw, 260px);
+  height: min(28vw, 260px);
+  top: 40%;
+  left: 42%;
+  background: radial-gradient(circle, rgba(26, 125, 255, 0.35) 0%, transparent 70%);
+  animation: rglOrbFloatC 12s ease-in-out infinite;
+}
+
+.hero .hero-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.08), transparent);
+  animation: rglScan 9s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+@keyframes rglGridDrift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(48px, 48px, 0); }
+}
+
+@keyframes rglOrbFloatA {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-24px, 30px, 0) scale(1.06); }
+}
+
+@keyframes rglOrbFloatB {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(28px, -20px, 0) scale(1.08); }
+}
+
+@keyframes rglOrbFloatC {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-18px, -24px, 0); }
+}
+
+@keyframes rglScan {
+  0% { top: -10%; }
+  100% { top: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .hero-grid,
+  .hero .hero-orb,
+  .hero .hero-scan {
+    animation: none !important;
+  }
 }
 
 .hero .container {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .hero .hero-content {
@@ -799,14 +901,15 @@ section,
 
 .hero .hero-content .subtitle {
   display: inline-block;
+  font-family: var(--heading-font);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   text-transform: uppercase;
   color: var(--accent-color);
   margin-bottom: 15px;
-  letter-spacing: 1px;
+  letter-spacing: 0.14em;
   position: relative;
-  padding-left: 25px;
+  padding-left: 28px;
 }
 
 .hero .hero-content .subtitle::before {
@@ -814,10 +917,11 @@ section,
   position: absolute;
   left: 0;
   top: 50%;
-  width: 15px;
+  width: 18px;
   height: 2px;
-  background-color: var(--accent-color);
+  background: linear-gradient(90deg, #14529d, #00d4ff);
   transform: translateY(-50%);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.45);
 }
 
 .hero .hero-content h1 {
@@ -828,10 +932,12 @@ section,
 }
 
 .hero .hero-content h3 {
-  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+  font-family: var(--heading-font);
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
   font-weight: 600;
   margin-bottom: 28px;
-  line-height: 1.45;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
   color: var(--heading-color);
   max-width: 36em;
 }
@@ -886,18 +992,33 @@ section,
   align-items: center;
   gap: 14px;
   line-height: 1.5;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(20, 82, 157, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.hero .hero-content .hero-sentences .hero-sentence-item:hover {
+  border-color: rgba(0, 212, 255, 0.45);
+  transform: translateX(4px);
 }
 
 .hero .hero-content .hero-sentences .hero-sentence-icon {
-  flex: 0 0 32px;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  max-width: 32px;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  max-width: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-color);
+  color: #14529d;
+  background: linear-gradient(145deg, rgba(0, 212, 255, 0.18), rgba(20, 82, 157, 0.1));
+  border: 1px solid rgba(0, 212, 255, 0.28);
+  border-radius: 10px;
 }
 
 .hero .hero-content .hero-sentences .hero-sentence-icon svg {
@@ -917,7 +1038,11 @@ section,
 
 .hero .hero-content .hero-sentences .hero-sentence-text strong {
   font-weight: 700;
-  color: var(--heading-color);
+  color: #14529d;
+  background: linear-gradient(90deg, #14529d, #1a7dff 60%, #00a8cc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero .hero-buttons {
@@ -949,19 +1074,23 @@ section,
 
 .hero .hero-buttons .btn-primary {
   display: inline-block;
-  padding: 14px 32px;
-  background-color: var(--accent-color);
-  color: var(--contrast-color);
-  border-radius: 4px;
+  padding: 14px 34px;
+  background: linear-gradient(135deg, #14529d 0%, #1a7dff 70%, #00b8e0 160%);
+  color: #ffffff;
+  border-radius: 999px;
+  font-family: var(--heading-font);
   font-weight: 600;
+  letter-spacing: 0.02em;
   text-align: center;
-  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  box-shadow: 0 10px 28px rgba(20, 82, 157, 0.28), 0 0 0 0 rgba(0, 212, 255, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .hero .hero-buttons .btn-primary:hover {
-  background-color: color-mix(in srgb, var(--accent-color), black 15%);
   transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 16px 36px rgba(20, 82, 157, 0.35), 0 0 24px rgba(0, 212, 255, 0.25);
+  color: #ffffff;
 }
 
 .hero .hero-buttons .btn-secondary {
@@ -1023,20 +1152,33 @@ section,
 
 .hero .hero-image {
   position: relative;
-  border-radius: 8px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 24px 48px rgba(10, 39, 72, 0.18),
+    0 0 0 1px rgba(0, 212, 255, 0.2),
+    0 0 40px rgba(0, 212, 255, 0.12);
+}
+
+.hero .hero-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(145deg, rgba(0, 212, 255, 0.12), transparent 40%, rgba(20, 82, 157, 0.15));
+  border-radius: inherit;
 }
 
 .hero .hero-image img {
   width: 100%;
   height: auto;
-  border-radius: 8px;
-  transition: transform 0.5s ease;
+  border-radius: 20px;
+  transition: transform 0.6s ease;
 }
 
 .hero .hero-image:hover img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .hero .hero-image .image-badge {
@@ -5490,3 +5632,86 @@ section,
     height: 480px;
   }
 }
+/*--------------------------------------------------------------
+# RGL Futuristic AI Theme — global polish
+--------------------------------------------------------------*/
+body {
+  background-image:
+    radial-gradient(ellipse 90% 50% at 0% 0%, rgba(0, 212, 255, 0.06), transparent 50%),
+    radial-gradient(ellipse 70% 40% at 100% 10%, rgba(20, 82, 157, 0.07), transparent 45%);
+  background-attachment: fixed;
+}
+
+.header .branding {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.86) !important;
+  border-bottom: 1px solid rgba(20, 82, 157, 0.08);
+}
+
+.header .logo .sitename {
+  font-family: var(--heading-font);
+  letter-spacing: -0.02em;
+}
+
+.dark-background.section,
+.our-mission.section,
+.why-choose-us.section {
+  background: linear-gradient(160deg, #061829 0%, #0a2748 42%, #14529d 120%) !important;
+  position: relative;
+}
+
+.dark-background.section::after,
+.our-mission.section::after,
+.why-choose-us.section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 10%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 10%, transparent 75%);
+  opacity: 0.9;
+}
+
+.footer.dark-background {
+  background: linear-gradient(180deg, #061829 0%, #0a1f35 100%) !important;
+  border-top: 1px solid rgba(0, 212, 255, 0.12);
+}
+
+.call-to-action .cta-form-section .form-container,
+.form-container {
+  border: 1px solid rgba(20, 82, 157, 0.12) !important;
+  box-shadow: 0 20px 48px rgba(10, 39, 72, 0.08), 0 0 0 1px rgba(0, 212, 255, 0.06) !important;
+}
+
+.btn-primary,
+.call-to-action .btn.btn-primary {
+  background: linear-gradient(135deg, #14529d, #1a7dff) !important;
+  border: 1px solid rgba(0, 212, 255, 0.3) !important;
+  box-shadow: 0 8px 22px rgba(20, 82, 157, 0.25);
+}
+
+.key-principles .principle-item {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(232, 241, 250, 0.9)) !important;
+  border-color: rgba(20, 82, 157, 0.12) !important;
+}
+
+.key-principles .principle-icon {
+  box-shadow: 0 8px 24px rgba(20, 82, 157, 0.28), 0 0 16px rgba(0, 212, 255, 0.15) !important;
+}
+
+.diff-card {
+  border-color: rgba(20, 82, 157, 0.12) !important;
+  box-shadow: 0 12px 40px rgba(10, 39, 72, 0.08) !important;
+}
+
+.scroll-top {
+  background: linear-gradient(135deg, #14529d, #1a7dff) !important;
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  box-shadow: 0 8px 20px rgba(20, 82, 157, 0.35);
+}
+

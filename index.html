@@ -43,10 +43,10 @@
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-  <!-- Fonts -->
+  <!-- Fonts — futuristic AI theme (Sora + DM Sans) -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -82,8 +82,9 @@
       },
       {
         "@type": "Person",
-        "name": "Gil Ballesca",
-        "jobTitle": "Co-Founder"
+        "name": "Gil",
+        "jobTitle": "Co-Founder",
+        "email": "rgladmin@rgl.com.ph"
       }
     ],
     "areaServed": {
@@ -194,42 +195,46 @@
   <!-- RGL Design System - Unified Variables -->
   <style>
     :root {
-      /* ========== COLOR PALETTE ========== */
-      /* Primary Colors */
+      /* ========== COLOR PALETTE — Futuristic RGL Blue ========== */
       --rgl-primary: #14529d;
-      --rgl-primary-dark: #0d3a6e;
-      --rgl-primary-light: #0066ff;
+      --rgl-primary-dark: #0a2748;
+      --rgl-primary-deeper: #061829;
+      --rgl-primary-light: #1a7dff;
       --rgl-accent: #00d4ff;
+      --rgl-accent-soft: rgba(0, 212, 255, 0.14);
       
       /* Text Colors */
-      --rgl-heading: #102a49;
-      --rgl-text: #333333;
-      --rgl-text-muted: #64748b;
-      --rgl-text-light: rgba(255, 255, 255, 0.75);
+      --rgl-heading: #0b1f3a;
+      --rgl-text: #2a3a4d;
+      --rgl-text-muted: #5b6b7c;
+      --rgl-text-light: rgba(255, 255, 255, 0.78);
       --rgl-text-white: #ffffff;
       
-      /* Surface Colors */
+      /* Surface Colors — cool blue atmosphere */
       --rgl-surface: #ffffff;
-      --rgl-background: #f9fafb;
-      --rgl-background-light: #f8fafc;
-      --rgl-background-alt: #eff1f3;
+      --rgl-background: #f0f5fb;
+      --rgl-background-light: #e8f1fa;
+      --rgl-background-alt: #dce8f5;
       
       /* Gradients */
-      --rgl-gradient-primary: linear-gradient(135deg, var(--rgl-primary), var(--rgl-primary-light));
+      --rgl-gradient-primary: linear-gradient(135deg, var(--rgl-primary) 0%, var(--rgl-primary-light) 55%, var(--rgl-accent) 140%);
       --rgl-gradient-accent: linear-gradient(90deg, var(--rgl-accent), var(--rgl-primary-light));
-      --rgl-gradient-dark: linear-gradient(135deg, var(--rgl-primary), var(--rgl-primary-dark));
+      --rgl-gradient-dark: linear-gradient(145deg, var(--rgl-primary-deeper) 0%, var(--rgl-primary-dark) 45%, var(--rgl-primary) 100%);
       --rgl-gradient-surface: linear-gradient(180deg, var(--rgl-background-light) 0%, var(--rgl-surface) 100%);
+      --rgl-gradient-hero: radial-gradient(ellipse 80% 60% at 15% 20%, rgba(0, 212, 255, 0.18), transparent 55%),
+                          radial-gradient(ellipse 70% 50% at 90% 10%, rgba(26, 125, 255, 0.22), transparent 50%),
+                          radial-gradient(ellipse 60% 40% at 70% 90%, rgba(20, 82, 157, 0.12), transparent 55%),
+                          linear-gradient(165deg, #eaf3fc 0%, #f7fbff 45%, #e4eef9 100%);
       
       /* Border Colors */
-      --rgl-border: rgba(20, 82, 157, 0.08);
-      --rgl-border-hover: rgba(20, 82, 157, 0.2);
-      --rgl-border-accent: rgba(0, 212, 255, 0.3);
+      --rgl-border: rgba(20, 82, 157, 0.1);
+      --rgl-border-hover: rgba(20, 82, 157, 0.28);
+      --rgl-border-accent: rgba(0, 212, 255, 0.35);
       
       /* ========== TYPOGRAPHY ========== */
-      /* Font Families */
-      --rgl-font-body: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
-      --rgl-font-heading: "Ubuntu", sans-serif;
-      --rgl-font-nav: "Lato", sans-serif;
+      --rgl-font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --rgl-font-heading: "Sora", system-ui, sans-serif;
+      --rgl-font-nav: "DM Sans", system-ui, sans-serif;
       
       /* Font Sizes - Fluid Typography Scale */
       --rgl-text-xs: 0.8125rem;     /* 13px */
@@ -433,6 +438,13 @@
 
     <!-- Hero Section -->
     <section id="hero" class="hero section">
+      <div class="hero-atmosphere" aria-hidden="true">
+        <div class="hero-grid"></div>
+        <div class="hero-orb hero-orb-a"></div>
+        <div class="hero-orb hero-orb-b"></div>
+        <div class="hero-orb hero-orb-c"></div>
+        <div class="hero-scan"></div>
+      </div>
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
@@ -794,9 +806,9 @@
               <h3>AI-Powered Decision Intelligence Engine</h3>
               <p>Intelligent decision systems that help leaders navigate complexity with greater clarity and confidence.</p>
               <div class="service-features">
-                <span><i class="bi bi-check-circle"></i> Generative AI</span>
-                <span><i class="bi bi-check-circle"></i> Data Insights</span>
-                <span><i class="bi bi-check-circle"></i> Decision Frameworks</span>
+                <span><i class="bi bi-check-circle"></i> Evidence-Based Insights</span>
+                <span><i class="bi bi-check-circle"></i> Structured Decision Frameworks</span>
+                <span><i class="bi bi-check-circle"></i> Risk & Opportunity Analysis</span>
               </div>
               <h6 class="service-link">Faster, smarter, and more transparent decision-making.</h6>
             </div>
