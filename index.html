@@ -59,7 +59,7 @@
     Cache busting: bump ASSET_VERSION whenever you change CSS/JS (or after each deploy).
     Example: ?v=2026.08.10.1 → ?v=2026.08.10.2
   -->
-  <link href="assets/css/main.css?v=2026.08.10.13" rel="stylesheet">
+  <link href="assets/css/main.css?v=2026.08.10.14" rel="stylesheet">
 
   <!-- Critical topbar styles (inlined so mobile icons never break from CSS cache/deploy lag) -->
   <style id="rgl-topbar-critical">
@@ -155,7 +155,6 @@
       #navmenu.navmenu > ul {
         display: none !important;
       }
-      /* Kill template overlay — drawer owns the UI */
       body.mobile-nav-active #navmenu.navmenu {
         position: static !important;
         inset: auto !important;
@@ -168,25 +167,41 @@
       body.mobile-nav-active {
         overflow: hidden !important;
       }
+      /* Keep hamburger/X visible over light header */
+      .mobile-nav-toggle {
+        color: #14529d !important;
+        z-index: 100060 !important;
+        position: relative;
+      }
       body.mobile-nav-active .mobile-nav-toggle {
         position: fixed !important;
-        top: 18px !important;
-        right: 18px !important;
-        z-index: 100050 !important;
+        top: 14px !important;
+        right: 14px !important;
+        z-index: 100060 !important;
+        width: 44px !important;
+        height: 44px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 999px !important;
+        background: #14529d !important;
         color: #ffffff !important;
-        font-size: 32px !important;
+        font-size: 28px !important;
+        box-shadow: 0 8px 20px rgba(10, 39, 72, 0.35);
+        line-height: 1 !important;
+        margin: 0 !important;
       }
       #rgl-mobile-drawer {
         display: none;
         position: fixed;
         inset: 0;
         z-index: 100040;
-        background: rgba(6, 24, 41, 0.72);
-        padding: 88px 16px 24px;
         box-sizing: border-box;
+        pointer-events: none;
       }
       body.mobile-nav-active #rgl-mobile-drawer {
         display: block !important;
+        pointer-events: auto;
       }
       #rgl-mobile-drawer .rgl-mobile-drawer-backdrop {
         position: absolute;
@@ -194,9 +209,10 @@
         border: 0;
         margin: 0;
         padding: 0;
-        background: transparent;
+        background: rgba(6, 24, 41, 0.72);
         cursor: pointer;
         z-index: 0;
+        -webkit-tap-highlight-color: transparent;
       }
       #rgl-mobile-drawer .rgl-mobile-drawer-panel {
         position: relative;
@@ -205,11 +221,39 @@
         background: #ffffff !important;
         border-radius: 12px;
         box-shadow: 0 16px 40px rgba(10, 39, 72, 0.18);
-        padding: 8px 0;
-        margin: 0;
+        padding: 8px 0 12px;
+        margin: 72px 16px 24px;
         list-style: none;
-        max-height: calc(100vh - 120px);
+        max-height: calc(100vh - 110px);
         overflow-y: auto;
+        pointer-events: auto;
+      }
+      #rgl-mobile-drawer .rgl-mobile-drawer-close {
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-end;
+        width: 100%;
+        padding: 4px 12px 8px;
+        border: 0;
+        background: transparent;
+        color: #14529d;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      #rgl-mobile-drawer .rgl-mobile-drawer-close span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: rgba(20, 82, 157, 0.08);
+      }
+      #rgl-mobile-drawer .rgl-mobile-drawer-panel ul {
+        list-style: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
       #rgl-mobile-drawer .rgl-mobile-drawer-panel li {
         display: block !important;
@@ -1948,12 +1992,17 @@
   <!-- Mobile nav drawer: lives on body so sticky header cannot clip it -->
   <div id="rgl-mobile-drawer" hidden>
     <button type="button" class="rgl-mobile-drawer-backdrop" aria-label="Close menu"></button>
-    <ul class="rgl-mobile-drawer-panel">
-      <li><a href="#hero" style="color:#0b1f3a;display:block;padding:14px 20px;font-size:17px;font-weight:600;text-decoration:none;">Home</a></li>
-      <li><a href="#about" style="color:#0b1f3a;display:block;padding:14px 20px;font-size:17px;font-weight:600;text-decoration:none;">About</a></li>
-      <li><a href="#services" style="color:#0b1f3a;display:block;padding:14px 20px;font-size:17px;font-weight:600;text-decoration:none;">Services</a></li>
-      <li><a href="#call-to-action" style="color:#0b1f3a;display:block;padding:14px 20px;font-size:17px;font-weight:600;text-decoration:none;">Contact</a></li>
-    </ul>
+    <div class="rgl-mobile-drawer-panel" role="navigation" aria-label="Mobile">
+      <button type="button" class="rgl-mobile-drawer-close" aria-label="Close menu">
+        <span>Close ✕</span>
+      </button>
+      <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#call-to-action">Contact</a></li>
+      </ul>
+    </div>
   </div>
 
   <!-- Vendor JS Files -->
@@ -1964,7 +2013,7 @@
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/js/main.js?v=2026.08.10.12"></script>
+  <script src="assets/js/main.js?v=2026.08.10.14"></script>
 
   <!-- RGL Chatbot -->
   <style>

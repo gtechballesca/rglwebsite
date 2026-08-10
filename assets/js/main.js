@@ -24,7 +24,6 @@
 
   /**
    * Mobile nav toggle — uses #rgl-mobile-drawer on <body> (not header nav).
-   * Sticky/filter on header was clipping the template menu so links looked missing.
    */
   const mobileNavToggleBtn = document.querySelector('.mobile-nav-toggle');
   const mobileDrawer = document.getElementById('rgl-mobile-drawer');
@@ -35,11 +34,14 @@
       mobileNavToggleBtn.classList.toggle('bi-list', !open);
       mobileNavToggleBtn.classList.toggle('bi-x', open);
       mobileNavToggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      mobileNavToggleBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     }
     if (mobileDrawer) {
       if (open) {
+        mobileDrawer.hidden = false;
         mobileDrawer.removeAttribute('hidden');
       } else {
+        mobileDrawer.hidden = true;
         mobileDrawer.setAttribute('hidden', '');
       }
     }
@@ -49,10 +51,18 @@
     setMobileNavOpen(!document.body.classList.contains('mobile-nav-active'));
   }
 
+  function closeMobileNav(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setMobileNavOpen(false);
+  }
+
   if (mobileNavToggleBtn) {
     mobileNavToggleBtn.setAttribute('role', 'button');
     mobileNavToggleBtn.setAttribute('tabindex', '0');
-    mobileNavToggleBtn.setAttribute('aria-label', 'Menu');
+    mobileNavToggleBtn.setAttribute('aria-label', 'Open menu');
     mobileNavToggleBtn.setAttribute('aria-controls', 'rgl-mobile-drawer');
     mobileNavToggleBtn.setAttribute('aria-expanded', 'false');
     mobileNavToggleBtn.addEventListener('click', function(e) {
@@ -70,16 +80,20 @@
 
   if (mobileDrawer) {
     const backdrop = mobileDrawer.querySelector('.rgl-mobile-drawer-backdrop');
+    const closeBtn = mobileDrawer.querySelector('.rgl-mobile-drawer-close');
+
     if (backdrop) {
-      backdrop.addEventListener('click', function(e) {
-        e.preventDefault();
-        setMobileNavOpen(false);
-      });
+      backdrop.addEventListener('click', closeMobileNav);
+      backdrop.addEventListener('touchend', closeMobileNav, { passive: false });
     }
-    // Fallback: any tap on dimmed area outside the white panel
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeMobileNav);
+    }
+
+    // Tap anywhere outside the white panel closes the menu
     mobileDrawer.addEventListener('click', function(e) {
       if (!e.target.closest('.rgl-mobile-drawer-panel')) {
-        setMobileNavOpen(false);
+        closeMobileNav(e);
       }
     });
   }
