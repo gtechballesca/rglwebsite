@@ -23,118 +23,82 @@
   window.addEventListener('load', toggleScrolled);
 
   /**
-   * Mobile nav toggle — uses #rgl-mobile-drawer on <body> (not header nav).
+   * Mobile nav is controlled by the inline script next to #rgl-mobile-drawer
+   * (index.html). That avoids broken Close when a stale main.js is deployed.
+   * Keep these window hooks as a no-op-safe bridge if the inline script ran first.
    */
-  const mobileNavToggleBtn = document.querySelector('.mobile-nav-toggle');
-  const mobileDrawer = document.getElementById('rgl-mobile-drawer');
+  if (typeof window.rglSetMobileNavOpen !== 'function') {
+    const mobileNavToggleBtn = document.querySelector('.mobile-nav-toggle');
+    const mobileDrawer = document.getElementById('rgl-mobile-drawer');
+    let ignoreToggleUntil = 0;
 
-  function setMobileNavOpen(open) {
-    if (open) {
-      document.body.classList.add('mobile-nav-active');
-    } else {
-      document.body.classList.remove('mobile-nav-active');
+    function setMobileNavOpen(open) {
+      if (open) document.body.classList.add('mobile-nav-active');
+      else {
+        document.body.classList.remove('mobile-nav-active');
+        ignoreToggleUntil = Date.now() + 400;
+      }
+      if (mobileNavToggleBtn) {
+        mobileNavToggleBtn.classList.toggle('bi-list', !open);
+        mobileNavToggleBtn.classList.toggle('bi-x', open);
+        mobileNavToggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      if (mobileDrawer) {
+        if (open) {
+          mobileDrawer.hidden = false;
+          mobileDrawer.style.setProperty('display', 'block', 'important');
+        } else {
+          mobileDrawer.hidden = true;
+          mobileDrawer.style.setProperty('display', 'none', 'important');
+        }
+      }
     }
+
+    window.rglSetMobileNavOpen = setMobileNavOpen;
+    window.rglCloseMobileNav = function (e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      setMobileNavOpen(false);
+      return false;
+    };
+    window.rglToggleMobileNav = function (e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      if (Date.now() < ignoreToggleUntil) return false;
+      setMobileNavOpen(!document.body.classList.contains('mobile-nav-active'));
+      return false;
+    };
 
     if (mobileNavToggleBtn) {
-      if (open) {
-        mobileNavToggleBtn.classList.remove('bi-list');
-        mobileNavToggleBtn.classList.add('bi-x');
-      } else {
-        mobileNavToggleBtn.classList.add('bi-list');
-        mobileNavToggleBtn.classList.remove('bi-x');
-      }
-      mobileNavToggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      mobileNavToggleBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      mobileNavToggleBtn.addEventListener('click', window.rglToggleMobileNav);
     }
-
     if (mobileDrawer) {
-      if (open) {
-        mobileDrawer.hidden = false;
-        mobileDrawer.removeAttribute('hidden');
-        mobileDrawer.style.setProperty('display', 'block', 'important');
-      } else {
-        mobileDrawer.hidden = true;
-        mobileDrawer.setAttribute('hidden', '');
-        mobileDrawer.style.setProperty('display', 'none', 'important');
-      }
+      mobileDrawer.addEventListener('click', function (e) {
+        if (e.target.closest('a')) return;
+        if (e.target.closest('.rgl-mobile-drawer-close') || e.target.classList.contains('rgl-mobile-drawer-backdrop') || !e.target.closest('.rgl-mobile-drawer-panel')) {
+          window.rglCloseMobileNav(e);
+        }
+      });
     }
   }
 
-  // Expose for inline onclick fallback on Close button
-  window.rglCloseMobileNav = function(e) {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    setMobileNavOpen(false);
-    return false;
-  };
-
-  window.rglToggleMobileNav = function(e) {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    setMobileNavOpen(!document.body.classList.contains('mobile-nav-active'));
-    return false;
-  };
-
-  if (mobileNavToggleBtn) {
-    mobileNavToggleBtn.setAttribute('role', 'button');
-    mobileNavToggleBtn.setAttribute('tabindex', '0');
-    mobileNavToggleBtn.setAttribute('aria-label', 'Open menu');
-    mobileNavToggleBtn.setAttribute('aria-controls', 'rgl-mobile-drawer');
-    mobileNavToggleBtn.setAttribute('aria-expanded', 'false');
-    mobileNavToggleBtn.addEventListener('click', window.rglToggleMobileNav);
-    mobileNavToggleBtn.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        window.rglToggleMobileNav(e);
-      }
-    });
-  }
-
-  if (mobileDrawer) {
-    // Single delegated handler — Close button, backdrop, or outside panel
-    function onDrawerPointer(e) {
-      const t = e.target;
-      if (
-        t.closest('.rgl-mobile-drawer-close') ||
-        t.classList.contains('rgl-mobile-drawer-backdrop') ||
-        t === mobileDrawer ||
-        !t.closest('.rgl-mobile-drawer-panel')
-      ) {
-        // Don't steal clicks from nav links
-        if (t.closest('a')) return;
-        window.rglCloseMobileNav(e);
-      }
-    }
-
-    mobileDrawer.addEventListener('click', onDrawerPointer);
-    mobileDrawer.addEventListener('pointerup', onDrawerPointer);
-  }
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && document.body.classList.contains('mobile-nav-active')) {
-      setMobileNavOpen(false);
-    }
-  });
-
-  /**
-   * Hide mobile nav on same-page/hash links and set active state on click
-   */
-  function bindNavLink(link) {
-    link.addEventListener('click', function() {
-      document.querySelectorAll('#navmenu a, #rgl-mobile-drawer a').forEach(el => el.classList.remove('active'));
+  // Prevent any leftover template hamburger handler from fighting the drawer
+  document.querySelectorAll('#navmenu a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      document.querySelectorAll('#navmenu a').forEach(function (el) { el.classList.remove('active'); });
       this.classList.add('active');
-      const mirror = document.querySelector('#navmenu a[href="' + this.getAttribute('href') + '"]');
-      if (mirror) mirror.classList.add('active');
-      if (document.body.classList.contains('mobile-nav-active')) {
-        setMobileNavOpen(false);
+      if (document.body.classList.contains('mobile-nav-active') && window.rglCloseMobileNav) {
+        window.rglCloseMobileNav();
       }
     });
-  }
-  document.querySelectorAll('#navmenu a').forEach(bindNavLink);
-  document.querySelectorAll('#rgl-mobile-drawer a').forEach(bindNavLink);
+  });
+  document.querySelectorAll('#rgl-mobile-drawer a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      document.querySelectorAll('#navmenu a, #rgl-mobile-drawer a').forEach(function (el) { el.classList.remove('active'); });
+      this.classList.add('active');
+      var mirror = document.querySelector('#navmenu a[href="' + this.getAttribute('href') + '"]');
+      if (mirror) mirror.classList.add('active');
+      if (window.rglCloseMobileNav) window.rglCloseMobileNav();
+    });
+  });
 
   /**
    * Navmenu Scrollspy - Update active nav link based on scroll position
