@@ -24,13 +24,30 @@
 
   /**
    * Mobile nav toggle
+   * Move #navmenu to <body> while open so position:fixed is not trapped by
+   * sticky header / filters (which made the hamburger panel look empty).
    */
   const mobileNavToggleBtn = document.querySelector('.mobile-nav-toggle');
+  const navmenuEl = document.querySelector('#navmenu');
+  const navmenuHome = navmenuEl ? navmenuEl.parentElement : null;
 
   function mobileNavToogle() {
-    document.querySelector('body').classList.toggle('mobile-nav-active');
-    mobileNavToggleBtn.classList.toggle('bi-list');
-    mobileNavToggleBtn.classList.toggle('bi-x');
+    const body = document.body;
+    const opening = !body.classList.contains('mobile-nav-active');
+
+    body.classList.toggle('mobile-nav-active');
+    if (mobileNavToggleBtn) {
+      mobileNavToggleBtn.classList.toggle('bi-list');
+      mobileNavToggleBtn.classList.toggle('bi-x');
+    }
+
+    if (navmenuEl && navmenuHome) {
+      if (opening) {
+        body.appendChild(navmenuEl);
+      } else if (navmenuEl.parentElement !== navmenuHome) {
+        navmenuHome.appendChild(navmenuEl);
+      }
+    }
   }
   if (mobileNavToggleBtn) {
     mobileNavToggleBtn.addEventListener('click', mobileNavToogle);

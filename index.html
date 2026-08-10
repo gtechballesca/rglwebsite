@@ -59,7 +59,7 @@
     Cache busting: bump ASSET_VERSION whenever you change CSS/JS (or after each deploy).
     Example: ?v=2026.08.10.1 → ?v=2026.08.10.2
   -->
-  <link href="assets/css/main.css?v=2026.08.10.6" rel="stylesheet">
+  <link href="assets/css/main.css?v=2026.08.10.7" rel="stylesheet">
 
   <!-- Critical topbar styles (inlined so mobile icons never break from CSS cache/deploy lag) -->
   <style id="rgl-topbar-critical">
@@ -144,6 +144,68 @@
       }
       .header .topbar .topbar-contact:first-child {
         padding-left: 0 !important;
+      }
+    }
+  </style>
+
+  <!-- Critical mobile hamburger menu — must not depend on cached main.css -->
+  <style id="rgl-mobile-nav-critical">
+    @media (max-width: 1199.98px) {
+      .navmenu ul {
+        display: none;
+        list-style: none;
+        margin: 0;
+        padding: 12px 0;
+      }
+      body.mobile-nav-active {
+        overflow: hidden !important;
+      }
+      body.mobile-nav-active .mobile-nav-toggle {
+        position: fixed !important;
+        top: 18px !important;
+        right: 18px !important;
+        z-index: 100002 !important;
+        color: #ffffff !important;
+        font-size: 32px !important;
+      }
+      body.mobile-nav-active #navmenu.navmenu {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        background: rgba(6, 24, 41, 0.72) !important;
+        z-index: 100000 !important;
+        display: block !important;
+      }
+      body.mobile-nav-active #navmenu.navmenu > ul {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 88px !important;
+        left: 16px !important;
+        right: 16px !important;
+        max-height: calc(100vh - 110px) !important;
+        overflow-y: auto !important;
+        background: #ffffff !important;
+        border-radius: 12px !important;
+        box-shadow: 0 16px 40px rgba(10, 39, 72, 0.18) !important;
+        z-index: 100001 !important;
+        padding: 8px 0 !important;
+      }
+      body.mobile-nav-active #navmenu.navmenu > ul > li {
+        display: block !important;
+      }
+      body.mobile-nav-active #navmenu.navmenu > ul > li > a {
+        display: flex !important;
+        align-items: center !important;
+        color: #0b1f3a !important;
+        font-size: 17px !important;
+        font-weight: 600 !important;
+        padding: 14px 20px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        text-decoration: none !important;
       }
     }
   </style>
@@ -1820,7 +1882,7 @@
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/js/main.js?v=2026.08.10.4"></script>
+  <script src="assets/js/main.js?v=2026.08.10.7"></script>
 
   <!-- RGL Chatbot -->
   <style>
