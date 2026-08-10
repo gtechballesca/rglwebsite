@@ -157,11 +157,13 @@ h6 {
 
 .header .topbar {
   background: linear-gradient(90deg, #061829 0%, #0a2748 50%, #14529d 100%);
-  height: 40px;
-  padding: 0;
+  min-height: 44px;
+  height: auto;
+  padding: 4px 0;
   font-size: 14px;
   transition: all 0.5s;
   border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+  overflow: visible;
 }
 
 .header .topbar > .container {
@@ -169,21 +171,22 @@ h6 {
   justify-content: space-between !important;
   align-items: center !important;
   width: 100%;
-  gap: 12px;
+  gap: 8px;
 }
 
 .header .topbar .contact-info {
   display: flex !important;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   flex: 1 1 auto;
   min-width: 0;
   justify-content: flex-start;
 }
 
 .header .topbar .contact-info .topbar-contact {
-  display: inline-flex;
+  display: inline-flex !important;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   padding: 0 10px;
   color: rgba(255, 255, 255, 0.95);
@@ -193,9 +196,15 @@ h6 {
 }
 
 .header .topbar .contact-info .topbar-contact i {
-  font-size: 15px;
-  color: #ffffff;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #ffffff !important;
   line-height: 1;
+  flex-shrink: 0;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .header .topbar .contact-info .topbar-contact .contact-label {
@@ -205,7 +214,7 @@ h6 {
 
 .header .topbar .contact-info .topbar-contact:hover,
 .header .topbar .contact-info .topbar-contact:hover i {
-  color: #00d4ff;
+  color: #00d4ff !important;
 }
 
 .header .topbar .social-links {
@@ -214,27 +223,32 @@ h6 {
   justify-content: flex-end;
   flex: 0 0 auto;
   margin-left: auto;
-  gap: 4px;
+  gap: 2px;
+  visibility: visible !important;
 }
 
 .header .topbar .social-links a {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   margin-left: 0;
   color: #ffffff !important;
   line-height: 1;
   font-size: 16px;
   text-decoration: none;
+  visibility: visible !important;
+  opacity: 1 !important;
   transition: color 0.3s, transform 0.2s;
 }
 
 .header .topbar .social-links a i {
+  display: inline-flex !important;
   font-size: 16px;
-  color: inherit;
+  color: inherit !important;
   line-height: 1;
+  visibility: visible !important;
 }
 
 .header .topbar .social-links a:hover,
@@ -243,54 +257,53 @@ h6 {
   transform: translateY(-1px);
 }
 
-@media (max-width: 767px) {
-  .header .topbar .contact-info {
-    justify-content: flex-start;
-    gap: 0;
-  }
-
+/* Small / tablet: show icons only — hide text labels/numbers */
+@media (max-width: 991px) {
   .header .topbar .contact-info .topbar-contact {
-    padding: 0 8px;
-    min-width: 36px;
-    min-height: 36px;
-    justify-content: center;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
   }
 
   .header .topbar .contact-info .topbar-contact i {
-    font-size: 16px;
+    font-size: 18px;
   }
 
-  /* Icons only on small screens — full text stays available via title/aria-label */
   .header .topbar .contact-info .topbar-contact-text {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    display: none !important;
   }
 
   .header .topbar .social-links a {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .header .topbar .social-links a i {
+    font-size: 18px;
   }
 }
 
-@media (min-width: 768px) {
+/* Desktop: show full contact text + icons */
+@media (min-width: 992px) {
   .header .topbar .contact-info .topbar-contact {
     padding: 0 0 0 18px;
+    justify-content: flex-start;
+    width: auto;
+    height: auto;
+    min-width: 0;
   }
 
   .header .topbar .contact-info .topbar-contact:first-child {
     padding-left: 0;
   }
 
+  .header .topbar .contact-info .topbar-contact-text {
+    display: inline !important;
+  }
+
   .header .topbar .social-links {
-    gap: 8px;
+    gap: 6px;
   }
 }
 
