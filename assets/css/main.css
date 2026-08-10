@@ -457,12 +457,14 @@ h6 {
 /* Navmenu - Mobile */
 @media (max-width: 1199px) {
   .mobile-nav-toggle {
-    color: var(--nav-color);
+    color: var(--nav-color, #14529d);
     font-size: 28px;
     line-height: 0;
     margin-right: 10px;
     cursor: pointer;
     transition: color 0.3s;
+    z-index: 10001;
+    position: relative;
   }
 
   .navmenu {
@@ -473,30 +475,37 @@ h6 {
   .navmenu ul {
     display: none;
     list-style: none;
-    position: absolute;
-    inset: 60px 20px 20px 20px;
-    padding: 10px 0;
+    position: fixed;
+    top: 100px;
+    left: 16px;
+    right: 16px;
+    bottom: auto;
+    max-height: calc(100vh - 120px);
+    padding: 12px 0;
     margin: 0;
-    border-radius: 6px;
-    background-color: var(--nav-mobile-background-color);
+    border-radius: 12px;
+    background-color: #ffffff !important;
     overflow-y: auto;
     transition: 0.3s;
-    z-index: 9998;
-    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.1);
+    z-index: 10000;
+    box-shadow: 0 16px 40px rgba(10, 39, 72, 0.18);
+    border: 1px solid rgba(20, 82, 157, 0.12);
   }
 
   .navmenu a,
   .navmenu a:focus {
-    color: var(--nav-dropdown-color);
-    padding: 10px 20px;
+    color: #0b1f3a !important;
+    padding: 14px 20px;
     font-family: var(--nav-font);
     font-size: 17px;
-    font-weight: 500;
+    font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: space-between;
     white-space: nowrap;
     transition: 0.3s;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   .navmenu a i,
@@ -511,25 +520,27 @@ h6 {
     justify-content: center;
     border-radius: 50%;
     transition: 0.3s;
-    background-color: color-mix(in srgb, var(--accent-color), transparent 90%);
+    background-color: rgba(20, 82, 157, 0.1);
+    color: #14529d;
   }
 
   .navmenu a i:hover,
   .navmenu a:focus i:hover {
-    background-color: var(--accent-color);
-    color: var(--contrast-color);
+    background-color: #14529d;
+    color: #ffffff;
   }
 
   .navmenu a:hover,
   .navmenu .active,
   .navmenu .active:focus {
-    color: var(--nav-dropdown-hover-color);
+    color: #14529d !important;
+    background: rgba(20, 82, 157, 0.06);
   }
 
   .navmenu .active i,
   .navmenu .active:focus i {
-    background-color: var(--accent-color);
-    color: var(--contrast-color);
+    background-color: #14529d;
+    color: #ffffff;
     transform: rotate(180deg);
   }
 
@@ -539,8 +550,8 @@ h6 {
     z-index: 99;
     padding: 10px 0;
     margin: 10px 20px;
-    background-color: var(--nav-dropdown-background-color);
-    border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+    background-color: #ffffff;
+    border: 1px solid rgba(20, 82, 157, 0.1);
     box-shadow: none;
     transition: all 0.5s ease-in-out;
   }
@@ -559,25 +570,28 @@ h6 {
   }
 
   .mobile-nav-active .mobile-nav-toggle {
-    color: #fff;
-    position: absolute;
+    color: #ffffff !important;
+    position: fixed;
     font-size: 32px;
-    top: 15px;
-    right: 15px;
+    top: 18px;
+    right: 18px;
     margin-right: 0;
-    z-index: 9999;
+    z-index: 10002;
   }
 
   .mobile-nav-active .navmenu {
     position: fixed;
-    overflow: hidden;
+    overflow: visible;
     inset: 0;
-    background: rgba(33, 37, 41, 0.8);
+    background: rgba(6, 24, 41, 0.72);
     transition: 0.3s;
+    z-index: 9999;
   }
 
-  .mobile-nav-active .navmenu>ul {
-    display: block;
+  .mobile-nav-active .navmenu > ul {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 }
 
