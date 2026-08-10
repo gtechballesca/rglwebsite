@@ -1,17 +1,9 @@
 ---
-# cPanel Git Deployment config
-# Docs: https://docs.cpanel.net/knowledge-base/web-services/guide-to-git-deployment/
-#
-# After adding this file:
-# 1. Commit + push to main on GitHub
-# 2. In cPanel → Git Version Control → Update from Remote
-# 3. Deploy HEAD Commit
-#
 deployment:
   tasks:
     - export DEPLOYPATH=/home/exgcgcl/public_html/
     - /bin/cp -f index.html $DEPLOYPATH
-    - /bin/cp -f .htaccess $DEPLOYPATH 2>/dev/null || true
     - /bin/cp -Rf assets $DEPLOYPATH
     - /bin/cp -Rf forms $DEPLOYPATH
     - /bin/cp -Rf vendor $DEPLOYPATH
+    - /bin/cp -f .htaccess $DEPLOYPATH
