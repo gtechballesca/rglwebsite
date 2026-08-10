@@ -1156,7 +1156,7 @@ section,
   isolation: isolate;
 }
 
-/* Traveling blue highlight — hover only */
+/* Traveling blue highlight — hover / tap only */
 .hero .hero-content .hero-sentences .hero-sentence-item::before {
   content: "";
   position: absolute;
@@ -1166,6 +1166,7 @@ section,
   height: 180%;
   min-width: 280px;
   min-height: 280px;
+  transform: translate(-50%, -50%);
   background: conic-gradient(
     from 0deg,
     transparent 0 62%,
@@ -1175,8 +1176,7 @@ section,
     #14529d 86%,
     transparent 92% 100%
   );
-  animation: rgl-border-spin 2.8s linear infinite;
-  animation-play-state: paused;
+  animation: none;
   opacity: 0;
   transition: opacity 0.25s ease;
   pointer-events: none;
@@ -1215,8 +1215,7 @@ section,
 .hero .hero-content .hero-sentences .hero-sentence-item:hover::before,
 .hero .hero-content .hero-sentences .hero-sentence-item.rgl-glow-active::before {
   opacity: 1;
-  animation-play-state: running;
-  animation-duration: 1.8s;
+  animation: rgl-border-spin 1.8s linear infinite;
 }
 
 .hero .hero-content .hero-sentences .hero-sentence-item:hover::after,
@@ -1687,6 +1686,7 @@ section,
   height: 160%;
   min-width: 320px;
   min-height: 320px;
+  transform: translate(-50%, -50%);
   background: conic-gradient(
     from 0deg,
     transparent 0 62%,
@@ -1696,8 +1696,7 @@ section,
     #14529d 86%,
     transparent 92% 100%
   );
-  animation: rgl-border-spin 2.4s linear infinite;
-  animation-play-state: paused;
+  animation: none;
   opacity: 0;
   transition: opacity 0.25s ease;
   pointer-events: none;
@@ -1733,8 +1732,7 @@ section,
 .services .service-card:focus-within::before,
 .services .service-card.rgl-glow-active::before {
   opacity: 1;
-  animation-play-state: running;
-  animation-duration: 1.5s;
+  animation: rgl-border-spin 1.5s linear infinite;
 }
 
 .services .service-card:hover::after,

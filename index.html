@@ -59,7 +59,7 @@
     Cache busting: bump ASSET_VERSION whenever you change CSS/JS (or after each deploy).
     Example: ?v=2026.08.10.1 → ?v=2026.08.10.2
   -->
-  <link href="assets/css/main.css?v=2026.08.10.25" rel="stylesheet">
+  <link href="assets/css/main.css?v=2026.08.10.26" rel="stylesheet">
 
   <!-- Critical topbar styles (inlined so mobile icons never break from CSS cache/deploy lag) -->
   <style id="rgl-topbar-critical">
@@ -345,6 +345,7 @@
       height: 160%;
       min-width: 320px;
       min-height: 320px;
+      transform: translate(-50%, -50%);
       background: conic-gradient(
         from 0deg,
         transparent 0 62%,
@@ -354,8 +355,8 @@
         #14529d 86%,
         transparent 92% 100%
       );
-      animation: rgl-border-spin 2.4s linear infinite;
-      animation-play-state: paused;
+      /* Do not use animation-play-state (broken on iOS). Animate only when active. */
+      animation: none;
       opacity: 0;
       transition: opacity 0.25s ease;
       pointer-events: none;
@@ -429,7 +430,7 @@
     .cta-box:hover::before,
     .cta-box.rgl-glow-active::before {
       opacity: 1;
-      animation-play-state: running;
+      animation: rgl-border-spin 2.4s linear infinite;
     }
     .services .service-card:hover::after,
     .services .service-card.rgl-glow-active::after,
@@ -455,7 +456,8 @@
     }
     .why-choose-card:hover::before,
     .why-choose-card.rgl-glow-active::before {
-      animation-play-state: running;
+      opacity: 1;
+      animation: rgl-border-spin 2.4s linear infinite;
     }
 
     /* Hero IT Talent / AI Solutions / AI Training — hover / tap */
@@ -477,6 +479,7 @@
       height: 180%;
       min-width: 280px;
       min-height: 280px;
+      transform: translate(-50%, -50%);
       background: conic-gradient(
         from 0deg,
         transparent 0 62%,
@@ -486,8 +489,7 @@
         #14529d 86%,
         transparent 92% 100%
       );
-      animation: rgl-border-spin 2.8s linear infinite;
-      animation-play-state: paused;
+      animation: none;
       opacity: 0;
       transition: opacity 0.25s ease;
       pointer-events: none;
@@ -521,7 +523,7 @@
     .hero .hero-sentences .hero-sentence-item:hover::before,
     .hero .hero-sentences .hero-sentence-item.rgl-glow-active::before {
       opacity: 1;
-      animation-play-state: running;
+      animation: rgl-border-spin 2.8s linear infinite;
     }
     .hero .hero-sentences .hero-sentence-item:hover::after,
     .hero .hero-sentences .hero-sentence-item.rgl-glow-active::after {
@@ -570,8 +572,9 @@
       var ACTIVE = 'rgl-glow-active';
       var clearTimer = null;
 
-      function isTouchUi() {
-        return window.matchMedia('(hover: none), (pointer: coarse)').matches;
+      function shouldUseTapGlow() {
+        /* Real phones + narrow/desktop “mobile” previews (DevTools often still reports fine pointer) */
+        return window.matchMedia('(hover: none), (pointer: coarse), (max-width: 991.98px)').matches;
       }
 
       function clearGlow(except) {
@@ -581,27 +584,31 @@
       }
 
       function activateGlow(card) {
-        var wasActive = card.classList.contains(ACTIVE);
+        var turningOff = card.classList.contains(ACTIVE);
         clearGlow(card);
-        if (wasActive) {
+        if (clearTimer) {
+          window.clearTimeout(clearTimer);
+          clearTimer = null;
+        }
+        if (turningOff) {
           card.classList.remove(ACTIVE);
           return;
         }
+        /* Force a reflow so Safari restarts the spin animation */
+        void card.offsetWidth;
         card.classList.add(ACTIVE);
-        if (clearTimer) window.clearTimeout(clearTimer);
         clearTimer = window.setTimeout(function () {
           card.classList.remove(ACTIVE);
           clearTimer = null;
         }, 3200);
       }
 
-      document.addEventListener('pointerup', function (e) {
-        if (!isTouchUi()) return;
-        if (e.pointerType === 'mouse') return;
+      document.addEventListener('click', function (e) {
+        if (!shouldUseTapGlow()) return;
         var card = e.target && e.target.closest ? e.target.closest(SELECTOR) : null;
         if (card) activateGlow(card);
         else clearGlow();
-      }, { passive: true });
+      });
     })();
   </script>
 
