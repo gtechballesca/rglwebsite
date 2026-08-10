@@ -5022,6 +5022,7 @@ section,
   right: 24px;
   z-index: 999990;
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  visibility: hidden !important;
 }
 
 /* Tooltip */
