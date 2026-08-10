@@ -59,7 +59,7 @@
     Cache busting: bump ASSET_VERSION whenever you change CSS/JS (or after each deploy).
     Example: ?v=2026.08.10.1 → ?v=2026.08.10.2
   -->
-  <link href="assets/css/main.css?v=2026.08.10.24" rel="stylesheet">
+  <link href="assets/css/main.css?v=2026.08.10.25" rel="stylesheet">
 
   <!-- Critical topbar styles (inlined so mobile icons never break from CSS cache/deploy lag) -->
   <style id="rgl-topbar-critical">
@@ -282,7 +282,7 @@
     }
   </style>
 
-  <!-- Critical glow border: hover-only on all highlight cards including hero sentences -->
+  <!-- Critical glow border: hover on desktop, tap on mobile -->
   <style id="rgl-glow-border-critical">
     @keyframes rgl-glow-pulse {
       0%, 100% {
@@ -408,46 +408,65 @@
     }
 
     .services .service-card:hover,
+    .services .service-card.rgl-glow-active,
     .key-principles .principle-item:hover,
+    .key-principles .principle-item.rgl-glow-active,
     .rgl-advantage .loop-step:hover,
+    .rgl-advantage .loop-step.rgl-glow-active,
     .cta-box:hover,
-    .differentiators .diff-card:hover {
+    .cta-box.rgl-glow-active,
+    .differentiators .diff-card:hover,
+    .differentiators .diff-card.rgl-glow-active {
       animation: rgl-glow-pulse 2.4s ease-in-out infinite;
       border-color: rgba(0, 212, 255, 0.55);
     }
     .services .service-card:hover::before,
+    .services .service-card.rgl-glow-active::before,
     .key-principles .principle-item:hover::before,
+    .key-principles .principle-item.rgl-glow-active::before,
     .rgl-advantage .loop-step:hover::before,
-    .cta-box:hover::before {
+    .rgl-advantage .loop-step.rgl-glow-active::before,
+    .cta-box:hover::before,
+    .cta-box.rgl-glow-active::before {
       opacity: 1;
       animation-play-state: running;
     }
     .services .service-card:hover::after,
+    .services .service-card.rgl-glow-active::after,
     .key-principles .principle-item:hover::after,
+    .key-principles .principle-item.rgl-glow-active::after,
     .rgl-advantage .loop-step:hover::after,
-    .cta-box:hover::after {
+    .rgl-advantage .loop-step.rgl-glow-active::after,
+    .cta-box:hover::after,
+    .cta-box.rgl-glow-active::after {
       opacity: 1;
     }
 
-    .why-choose-card:hover {
+    .why-choose-card:hover,
+    .why-choose-card.rgl-glow-active {
       animation: rgl-glow-pulse-dark 2.4s ease-in-out infinite;
       border-color: rgba(0, 212, 255, 0.65);
     }
     .why-choose-card:hover::before,
-    .why-choose-card:hover::after {
+    .why-choose-card.rgl-glow-active::before,
+    .why-choose-card:hover::after,
+    .why-choose-card.rgl-glow-active::after {
       opacity: 1;
     }
-    .why-choose-card:hover::before {
+    .why-choose-card:hover::before,
+    .why-choose-card.rgl-glow-active::before {
       animation-play-state: running;
     }
 
-    /* Hero IT Talent / AI Solutions / AI Training — hover only */
+    /* Hero IT Talent / AI Solutions / AI Training — hover / tap */
     .hero .hero-sentences .hero-sentence-item {
       position: relative !important;
       overflow: hidden !important;
       isolation: isolate;
       background: #ffffff !important;
       border: 1px solid rgba(20, 82, 157, 0.16);
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
     }
     .hero .hero-sentences .hero-sentence-item::before {
       content: "";
@@ -494,26 +513,36 @@
       position: relative;
       z-index: 2;
     }
-    .hero .hero-sentences .hero-sentence-item:hover {
+    .hero .hero-sentences .hero-sentence-item:hover,
+    .hero .hero-sentences .hero-sentence-item.rgl-glow-active {
       animation: rgl-glow-pulse 2.8s ease-in-out infinite;
       border-color: rgba(0, 212, 255, 0.55);
     }
-    .hero .hero-sentences .hero-sentence-item:hover::before {
+    .hero .hero-sentences .hero-sentence-item:hover::before,
+    .hero .hero-sentences .hero-sentence-item.rgl-glow-active::before {
       opacity: 1;
       animation-play-state: running;
     }
-    .hero .hero-sentences .hero-sentence-item:hover::after {
+    .hero .hero-sentences .hero-sentence-item:hover::after,
+    .hero .hero-sentences .hero-sentence-item.rgl-glow-active::after {
       opacity: 1;
     }
 
     @media (prefers-reduced-motion: reduce) {
       .services .service-card:hover,
+      .services .service-card.rgl-glow-active,
       .key-principles .principle-item:hover,
+      .key-principles .principle-item.rgl-glow-active,
       .rgl-advantage .loop-step:hover,
+      .rgl-advantage .loop-step.rgl-glow-active,
       .cta-box:hover,
+      .cta-box.rgl-glow-active,
       .differentiators .diff-card:hover,
+      .differentiators .diff-card.rgl-glow-active,
       .why-choose-card:hover,
-      .hero .hero-sentences .hero-sentence-item:hover {
+      .why-choose-card.rgl-glow-active,
+      .hero .hero-sentences .hero-sentence-item:hover,
+      .hero .hero-sentences .hero-sentence-item.rgl-glow-active {
         animation: none;
         box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.45);
       }
@@ -527,6 +556,54 @@
       }
     }
   </style>
+  <script>
+    (function () {
+      var SELECTOR = [
+        '.hero .hero-sentences .hero-sentence-item',
+        '.services .service-card',
+        '.key-principles .principle-item',
+        '.rgl-advantage .loop-step',
+        '.cta-box',
+        '.why-choose-card',
+        '.differentiators .diff-card'
+      ].join(',');
+      var ACTIVE = 'rgl-glow-active';
+      var clearTimer = null;
+
+      function isTouchUi() {
+        return window.matchMedia('(hover: none), (pointer: coarse)').matches;
+      }
+
+      function clearGlow(except) {
+        document.querySelectorAll('.' + ACTIVE).forEach(function (el) {
+          if (el !== except) el.classList.remove(ACTIVE);
+        });
+      }
+
+      function activateGlow(card) {
+        var wasActive = card.classList.contains(ACTIVE);
+        clearGlow(card);
+        if (wasActive) {
+          card.classList.remove(ACTIVE);
+          return;
+        }
+        card.classList.add(ACTIVE);
+        if (clearTimer) window.clearTimeout(clearTimer);
+        clearTimer = window.setTimeout(function () {
+          card.classList.remove(ACTIVE);
+          clearTimer = null;
+        }, 3200);
+      }
+
+      document.addEventListener('pointerup', function (e) {
+        if (!isTouchUi()) return;
+        if (e.pointerType === 'mouse') return;
+        var card = e.target && e.target.closest ? e.target.closest(SELECTOR) : null;
+        if (card) activateGlow(card);
+        else clearGlow();
+      }, { passive: true });
+    })();
+  </script>
 
   <!-- Structured Data (JSON-LD) - Organization -->
   <script type="application/ld+json">
@@ -1054,7 +1131,7 @@
             padding: var(--rgl-space-lg) var(--rgl-space-xl);
             background: #ffffff;
             border-radius: var(--rgl-radius-md);
-            margin-bottom: var(--rgl-space-md);
+            margin-bottom: var(--rgl-space-xl);
             border: 1px solid var(--rgl-border);
             transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             position: relative;
@@ -1066,7 +1143,16 @@
           .key-principles .principle-item:focus-within {
             transform: translateX(8px);
           }
-          .key-principles .principle-item:last-child {
+          .key-principles .row > [class*="col-"] .principle-item:last-child {
+            margin-bottom: 0;
+          }
+          /* On mobile columns stack — keep space between the last card of one col and the next */
+          @media (max-width: 991.98px) {
+            .key-principles .row > [class*="col-"]:not(:last-child) {
+              margin-bottom: var(--rgl-space-xl);
+            }
+          }
+          .key-principles .row > [class*="col-"]:last-child .principle-item:last-child {
             margin-bottom: 0;
           }
           .key-principles .principle-icon {

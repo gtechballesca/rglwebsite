@@ -1202,7 +1202,8 @@ section,
   z-index: 2;
 }
 
-.hero .hero-content .hero-sentences .hero-sentence-item:hover {
+.hero .hero-content .hero-sentences .hero-sentence-item:hover,
+.hero .hero-content .hero-sentences .hero-sentence-item.rgl-glow-active {
   border-color: rgba(0, 212, 255, 0.55);
   transform: translateX(4px);
   box-shadow:
@@ -1211,13 +1212,15 @@ section,
     0 0 12px rgba(0, 212, 255, 0.05);
 }
 
-.hero .hero-content .hero-sentences .hero-sentence-item:hover::before {
+.hero .hero-content .hero-sentences .hero-sentence-item:hover::before,
+.hero .hero-content .hero-sentences .hero-sentence-item.rgl-glow-active::before {
   opacity: 1;
   animation-play-state: running;
   animation-duration: 1.8s;
 }
 
-.hero .hero-content .hero-sentences .hero-sentence-item:hover::after {
+.hero .hero-content .hero-sentences .hero-sentence-item:hover::after,
+.hero .hero-content .hero-sentences .hero-sentence-item.rgl-glow-active::after {
   opacity: 1;
 }
 
@@ -1234,7 +1237,8 @@ section,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero .hero-content .hero-sentences .hero-sentence-item:hover::before {
+  .hero .hero-content .hero-sentences .hero-sentence-item:hover::before,
+  .hero .hero-content .hero-sentences .hero-sentence-item.rgl-glow-active::before {
     animation: none;
     background: linear-gradient(
       120deg,
@@ -1718,27 +1722,31 @@ section,
 }
 
 .services .service-card:hover,
-.services .service-card:focus-within {
+.services .service-card:focus-within,
+.services .service-card.rgl-glow-active {
   transform: translateY(-5px);
   box-shadow: 0 15px 35px rgba(20, 82, 157, 0.14);
   border-color: rgba(0, 212, 255, 0.35);
 }
 
 .services .service-card:hover::before,
-.services .service-card:focus-within::before {
+.services .service-card:focus-within::before,
+.services .service-card.rgl-glow-active::before {
   opacity: 1;
   animation-play-state: running;
   animation-duration: 1.5s;
 }
 
 .services .service-card:hover::after,
-.services .service-card:focus-within::after {
+.services .service-card:focus-within::after,
+.services .service-card.rgl-glow-active::after {
   opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .services .service-card:hover::before,
-  .services .service-card:focus-within::before {
+  .services .service-card:focus-within::before,
+  .services .service-card.rgl-glow-active::before {
     animation: none;
     background: linear-gradient(
       120deg,
