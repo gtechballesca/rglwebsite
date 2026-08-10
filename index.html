@@ -59,7 +59,7 @@
     Cache busting: bump ASSET_VERSION whenever you change CSS/JS (or after each deploy).
     Example: ?v=2026.08.10.1 → ?v=2026.08.10.2
   -->
-  <link href="assets/css/main.css?v=2026.08.10.9" rel="stylesheet">
+  <link href="assets/css/main.css?v=2026.08.10.13" rel="stylesheet">
 
   <!-- Critical topbar styles (inlined so mobile icons never break from CSS cache/deploy lag) -->
   <style id="rgl-topbar-critical">
@@ -188,7 +188,19 @@
       body.mobile-nav-active #rgl-mobile-drawer {
         display: block !important;
       }
+      #rgl-mobile-drawer .rgl-mobile-drawer-backdrop {
+        position: absolute;
+        inset: 0;
+        border: 0;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        cursor: pointer;
+        z-index: 0;
+      }
       #rgl-mobile-drawer .rgl-mobile-drawer-panel {
+        position: relative;
+        z-index: 1;
         display: block !important;
         background: #ffffff !important;
         border-radius: 12px;
@@ -1075,6 +1087,7 @@
           line-height: var(--rgl-leading-relaxed);
         }
         .why-choose-card {
+          --hero-border-angle: 0deg;
           background: rgba(255, 255, 255, 0.03);
           -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
@@ -1082,29 +1095,64 @@
           border-radius: var(--rgl-radius-lg);
           padding: var(--rgl-space-2xl);
           height: 100%;
-          transition: var(--rgl-transition-smooth);
+          transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
           position: relative;
           overflow: hidden;
+          isolation: isolate;
         }
         .why-choose-card::before {
           content: "";
           position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-          background: linear-gradient(90deg, var(--rgl-primary-light), var(--rgl-accent));
+          inset: 0;
+          border-radius: inherit;
+          padding: 1.5px;
+          background: conic-gradient(
+            from var(--hero-border-angle),
+            rgba(20, 82, 157, 0.1) 0deg,
+            rgba(0, 212, 255, 0.15) 60deg,
+            #14529d 110deg,
+            #00d4ff 145deg,
+            #14529d 180deg,
+            rgba(0, 212, 255, 0.15) 230deg,
+            rgba(20, 82, 157, 0.1) 360deg
+          );
+          -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+          mask-composite: exclude;
+          pointer-events: none;
+          z-index: 1;
           opacity: 0;
-          transition: var(--rgl-transition-base);
+          transition: opacity 0.25s ease;
+        }
+        .why-choose-card > * {
+          position: relative;
+          z-index: 2;
         }
         .why-choose-card:hover {
           transform: translateY(-8px);
           background: rgba(255, 255, 255, 0.06);
-          border-color: var(--rgl-border-accent);
+          border-color: rgba(0, 212, 255, 0.28);
           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
         .why-choose-card:hover::before {
           opacity: 1;
+          animation: hero-border-travel 2.5s linear infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .why-choose-card:hover::before {
+            animation: none;
+            background: linear-gradient(
+              120deg,
+              rgba(20, 82, 157, 0.45),
+              rgba(0, 212, 255, 0.7),
+              rgba(20, 82, 157, 0.45)
+            );
+          }
         }
         .why-choose-card .card-icon {
           width: var(--rgl-icon-md);
@@ -1271,12 +1319,14 @@
           box-shadow: var(--rgl-shadow-md);
           border: 1px solid var(--rgl-border);
           position: relative;
-          transition: var(--rgl-transition-base);
+          overflow: hidden;
+          isolation: isolate;
+          transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
         .loop-step:hover {
           transform: translateY(-8px);
           box-shadow: var(--rgl-shadow-lg);
-          border-color: var(--rgl-border-hover);
+          border-color: rgba(0, 212, 255, 0.28);
         }
         .loop-step .step-number {
           width: var(--rgl-space-5xl);
@@ -1472,7 +1522,9 @@
           border: 1px solid var(--rgl-border);
           position: relative;
           overflow: hidden;
+          isolation: isolate;
           text-align: center;
+          transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
         .diff-card::before {
           content: "";
@@ -1482,6 +1534,11 @@
           right: 0;
           height: 5px;
           background: linear-gradient(90deg, var(--rgl-primary), var(--rgl-primary-light), var(--rgl-accent));
+          z-index: 3;
+        }
+        .diff-card:hover {
+          transform: translateY(-4px);
+          border-color: rgba(0, 212, 255, 0.28);
         }
         .diff-card .card-number {
           position: absolute;
@@ -1890,6 +1947,7 @@
 
   <!-- Mobile nav drawer: lives on body so sticky header cannot clip it -->
   <div id="rgl-mobile-drawer" hidden>
+    <button type="button" class="rgl-mobile-drawer-backdrop" aria-label="Close menu"></button>
     <ul class="rgl-mobile-drawer-panel">
       <li><a href="#hero" style="color:#0b1f3a;display:block;padding:14px 20px;font-size:17px;font-weight:600;text-decoration:none;">Home</a></li>
       <li><a href="#about" style="color:#0b1f3a;display:block;padding:14px 20px;font-size:17px;font-weight:600;text-decoration:none;">About</a></li>
@@ -1906,7 +1964,7 @@
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="assets/js/main.js?v=2026.08.10.8"></script>
+  <script src="assets/js/main.js?v=2026.08.10.12"></script>
 
   <!-- RGL Chatbot -->
   <style>

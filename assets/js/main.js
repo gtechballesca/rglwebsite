@@ -69,12 +69,26 @@
   }
 
   if (mobileDrawer) {
+    const backdrop = mobileDrawer.querySelector('.rgl-mobile-drawer-backdrop');
+    if (backdrop) {
+      backdrop.addEventListener('click', function(e) {
+        e.preventDefault();
+        setMobileNavOpen(false);
+      });
+    }
+    // Fallback: any tap on dimmed area outside the white panel
     mobileDrawer.addEventListener('click', function(e) {
-      if (e.target === mobileDrawer) {
+      if (!e.target.closest('.rgl-mobile-drawer-panel')) {
         setMobileNavOpen(false);
       }
     });
   }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.body.classList.contains('mobile-nav-active')) {
+      setMobileNavOpen(false);
+    }
+  });
 
   /**
    * Hide mobile nav on same-page/hash links and set active state on click

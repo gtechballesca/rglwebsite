@@ -1650,19 +1650,76 @@ section,
 }
 
 .services .service-card {
+  --hero-border-angle: 0deg;
   background-color: var(--surface-color);
   padding: 2.5rem;
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   height: 100%;
   position: relative;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(20, 82, 157, 0.1);
+}
+
+/* Traveling blue highlight along the card edge — hover only */
+.services .service-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--hero-border-angle),
+    rgba(20, 82, 157, 0.08) 0deg,
+    rgba(20, 82, 157, 0.12) 60deg,
+    #14529d 110deg,
+    #00d4ff 145deg,
+    #14529d 180deg,
+    rgba(20, 82, 157, 0.12) 230deg,
+    rgba(20, 82, 157, 0.08) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.services .service-card > * {
+  position: relative;
+  z-index: 2;
 }
 
 .services .service-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 35px rgba(20, 82, 157, 0.12);
+  border-color: rgba(0, 212, 255, 0.25);
+}
+
+.services .service-card:hover::before {
+  opacity: 1;
+  animation: hero-border-travel 2.5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .services .service-card:hover::before {
+    animation: none;
+    background: linear-gradient(
+      120deg,
+      rgba(20, 82, 157, 0.35),
+      rgba(0, 212, 255, 0.55),
+      rgba(20, 82, 157, 0.35)
+    );
+  }
 }
 
 .services .service-card.featured {
@@ -5939,5 +5996,86 @@ body {
   background: linear-gradient(135deg, #14529d, #1a7dff) !important;
   border: 1px solid rgba(0, 212, 255, 0.35);
   box-shadow: 0 8px 20px rgba(20, 82, 157, 0.35);
+}
+
+/*--------------------------------------------------------------
+# Shared hover blue border (CTA, Deliver Value, Differentiators)
+--------------------------------------------------------------*/
+.cta-box,
+.rgl-advantage .loop-step,
+.differentiators .diff-card {
+  --hero-border-angle: 0deg;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* CTA + loop-step use ::before; diff-card keeps top accent on ::before, uses ::after */
+.cta-box::before,
+.rgl-advantage .loop-step::before,
+.differentiators .diff-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--hero-border-angle),
+    rgba(20, 82, 157, 0.08) 0deg,
+    rgba(20, 82, 157, 0.12) 60deg,
+    #14529d 110deg,
+    #00d4ff 145deg,
+    #14529d 180deg,
+    rgba(20, 82, 157, 0.12) 230deg,
+    rgba(20, 82, 157, 0.08) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.cta-box > *,
+.rgl-advantage .loop-step > *,
+.differentiators .diff-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.cta-box:hover,
+.rgl-advantage .loop-step:hover,
+.differentiators .diff-card:hover {
+  border-color: rgba(0, 212, 255, 0.28) !important;
+  box-shadow: 0 16px 40px rgba(20, 82, 157, 0.12);
+}
+
+.cta-box:hover::before,
+.rgl-advantage .loop-step:hover::before,
+.differentiators .diff-card:hover::after {
+  opacity: 1;
+  animation: hero-border-travel 2.5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-box:hover::before,
+  .rgl-advantage .loop-step:hover::before,
+  .differentiators .diff-card:hover::after {
+    animation: none;
+    background: linear-gradient(
+      120deg,
+      rgba(20, 82, 157, 0.35),
+      rgba(0, 212, 255, 0.55),
+      rgba(20, 82, 157, 0.35)
+    );
+  }
 }
 
