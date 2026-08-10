@@ -59,7 +59,7 @@
     Cache busting: bump ASSET_VERSION whenever you change CSS/JS (or after each deploy).
     Example: ?v=2026.08.10.1 → ?v=2026.08.10.2
   -->
-  <link href="assets/css/main.css?v=2026.08.10.19" rel="stylesheet">
+  <link href="assets/css/main.css?v=2026.08.10.20" rel="stylesheet">
 
   <!-- Critical topbar styles (inlined so mobile icons never break from CSS cache/deploy lag) -->
   <style id="rgl-topbar-critical">
@@ -282,34 +282,101 @@
     }
   </style>
 
-  <!-- Critical service-card border animation (works even if main.css deploy/cache lags) -->
-  <style id="rgl-service-card-critical">
+  <!-- Critical glow border animation for cards (production-safe; no @property dependency) -->
+  <style id="rgl-glow-border-critical">
+    @keyframes rgl-glow-pulse {
+      0%, 100% {
+        box-shadow:
+          0 10px 28px rgba(10, 39, 72, 0.06),
+          0 0 0 1px rgba(20, 82, 157, 0.18),
+          0 0 0 0 rgba(0, 212, 255, 0);
+        border-color: rgba(20, 82, 157, 0.22) !important;
+      }
+      50% {
+        box-shadow:
+          0 14px 34px rgba(20, 82, 157, 0.12),
+          0 0 0 2px rgba(0, 212, 255, 0.55),
+          0 0 22px 2px rgba(0, 212, 255, 0.28);
+        border-color: rgba(0, 212, 255, 0.65) !important;
+      }
+    }
+    @keyframes rgl-glow-pulse-dark {
+      0%, 100% {
+        box-shadow:
+          0 12px 28px rgba(0, 0, 0, 0.25),
+          0 0 0 1px rgba(0, 212, 255, 0.2),
+          0 0 0 0 rgba(0, 212, 255, 0);
+        border-color: rgba(0, 212, 255, 0.22) !important;
+      }
+      50% {
+        box-shadow:
+          0 16px 36px rgba(0, 0, 0, 0.35),
+          0 0 0 2px rgba(0, 212, 255, 0.7),
+          0 0 24px 2px rgba(0, 212, 255, 0.35);
+        border-color: rgba(0, 212, 255, 0.75) !important;
+      }
+    }
     @keyframes rgl-border-spin {
       to { transform: translate(-50%, -50%) rotate(360deg); }
     }
-    .services .service-card {
+
+    .services .service-card,
+    .key-principles .principle-item,
+    .rgl-advantage .loop-step,
+    .cta-box,
+    .differentiators .diff-card {
       position: relative !important;
       overflow: hidden !important;
       isolation: isolate;
-      border: 1px solid rgba(20, 82, 157, 0.14) !important;
+      border-style: solid !important;
+      border-width: 1px !important;
+      animation: rgl-glow-pulse 2.6s ease-in-out infinite !important;
     }
-    .services .service-card::before {
+
+    .why-choose-card {
+      position: relative !important;
+      overflow: hidden !important;
+      isolation: isolate;
+      border-style: solid !important;
+      border-width: 1px !important;
+      animation: rgl-glow-pulse-dark 2.6s ease-in-out infinite !important;
+    }
+
+    .services .row > .col-lg-4:nth-child(2) .service-card,
+    .key-principles .col-lg-6:first-child .principle-item:nth-child(2),
+    .rgl-advantage .loop-step:nth-child(3),
+    .why-choose-us .row > [class*="col-"]:nth-child(2) .why-choose-card,
+    .why-choose-us .row > [class*="col-"]:nth-child(5) .why-choose-card {
+      animation-delay: -0.85s !important;
+    }
+    .services .row > .col-lg-4:nth-child(3) .service-card,
+    .key-principles .col-lg-6:last-child .principle-item,
+    .rgl-advantage .loop-step:nth-child(5),
+    .why-choose-us .row > [class*="col-"]:nth-child(3) .why-choose-card {
+      animation-delay: -1.7s !important;
+    }
+
+    /* Traveling edge beam on top of the pulse */
+    .services .service-card::before,
+    .key-principles .principle-item::before,
+    .rgl-advantage .loop-step::before,
+    .cta-box::before,
+    .why-choose-card::before {
       content: "" !important;
       position: absolute !important;
       top: 50% !important;
       left: 50% !important;
-      width: 250% !important;
-      aspect-ratio: 1 !important;
-      height: auto !important;
+      width: 140% !important;
+      height: 140% !important;
+      min-width: 280px !important;
+      min-height: 280px !important;
       background: conic-gradient(
         from 0deg,
-        transparent 0deg,
-        transparent 210deg,
-        rgba(20, 82, 157, 0.35) 240deg,
-        #14529d 270deg,
-        #00d4ff 300deg,
-        #14529d 330deg,
-        transparent 360deg
+        transparent 0 68%,
+        #14529d 74%,
+        #00d4ff 80%,
+        #14529d 86%,
+        transparent 92% 100%
       ) !important;
       transform: translate(-50%, -50%) rotate(0deg) !important;
       animation: rgl-border-spin 2.8s linear infinite !important;
@@ -317,35 +384,72 @@
       pointer-events: none !important;
       z-index: 0 !important;
       border-radius: 0 !important;
-      translate: none !important;
       inset: auto !important;
       padding: 0 !important;
+      margin: 0 !important;
+      translate: none !important;
       -webkit-mask: none !important;
       mask: none !important;
     }
-    .services .row > .col-lg-4:nth-child(2) .service-card::before {
-      animation-delay: -0.9s !important;
-    }
-    .services .row > .col-lg-4:nth-child(3) .service-card::before {
-      animation-delay: -1.8s !important;
-    }
-    .services .service-card::after {
+
+    .services .service-card::after,
+    .key-principles .principle-item::after,
+    .rgl-advantage .loop-step::after,
+    .cta-box::after {
       content: "" !important;
       position: absolute !important;
       inset: 2px !important;
-      border-radius: 6px !important;
+      border-radius: inherit !important;
       background: #ffffff !important;
       pointer-events: none !important;
       z-index: 1 !important;
     }
-    .services .service-card > * {
+
+    .why-choose-card::after {
+      content: "" !important;
+      position: absolute !important;
+      inset: 2px !important;
+      border-radius: inherit !important;
+      background: rgba(10, 39, 72, 0.92) !important;
+      pointer-events: none !important;
+      z-index: 1 !important;
+    }
+    .why-choose-card.why-choose-highlight::after {
+      background: linear-gradient(135deg, rgba(0, 60, 140, 0.88), rgba(8, 40, 70, 0.94)) !important;
+    }
+
+    .services .service-card > *,
+    .key-principles .principle-item > *,
+    .rgl-advantage .loop-step > *,
+    .cta-box > *,
+    .why-choose-card > *,
+    .differentiators .diff-card > * {
       position: relative !important;
       z-index: 2 !important;
     }
+
+    /* diff-card keeps its top accent bar; use pulse only (safer with existing ::before) */
+    .differentiators .diff-card::before {
+      z-index: 3 !important;
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      .services .service-card::before {
+      .services .service-card,
+      .key-principles .principle-item,
+      .rgl-advantage .loop-step,
+      .cta-box,
+      .differentiators .diff-card,
+      .why-choose-card {
         animation: none !important;
-        background: linear-gradient(120deg, #14529d, #00d4ff, #14529d) !important;
+        box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.45) !important;
+      }
+      .services .service-card::before,
+      .key-principles .principle-item::before,
+      .rgl-advantage .loop-step::before,
+      .cta-box::before,
+      .why-choose-card::before {
+        animation: none !important;
+        opacity: 0.35 !important;
       }
     }
   </style>
